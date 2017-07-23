@@ -1,0 +1,7 @@
+C:\Projects\NeuralNetworksLab\NeuralNetworksLab\GraphView.Infrastructure\bin\Debug\GraphView.Infrastructure.dll
+C:\Projects\NeuralNetworksLab\NeuralNetworksLab\GraphView.Infrastructure\bin\Debug\GraphView.Infrastructure.pdb
+C:\Projects\NeuralNetworksLab\NeuralNetworksLab\GraphView.Infrastructure\bin\Debug\GraphView.Framework.dll
+C:\Projects\NeuralNetworksLab\NeuralNetworksLab\GraphView.Infrastructure\bin\Debug\GraphView.Framework.pdb
+C:\Projects\NeuralNetworksLab\NeuralNetworksLab\GraphView.Infrastructure\obj\Debug\GraphView.Infrastructure.csprojResolveAssemblyReference.cache
+C:\Projects\NeuralNetworksLab\NeuralNetworksLab\GraphView.Infrastructure\obj\Debug\GraphView.Infrastructure.dll
+C:\Projects\NeuralNetworksLab\NeuralNetworksLab\GraphView.Infrastructure\obj\Debug\GraphView.Infrastructure.pdb
