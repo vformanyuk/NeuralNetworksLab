@@ -1,26 +1,28 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using GraphView.Framework.Interfaces;
 using GraphView.Infrastructure.Annotations;
-using GraphView.Infrastructure.Interfaces;
+using NeuralNetworkLab.Interfaces;
 
-namespace GraphView.Infrastructure.FrameworkDefaults
+namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 {
-    public class Connector : IObservableConnector, INotifyPropertyChanged
+    public class Connector : IConnectionPoint, INotifyPropertyChanged
     {
         #region Constructors
 
-        public Connector() : this(null)
+        public Connector(NeuronNode host) : this(host, null)
         {
         }
 
-        public Connector(Func<Connector, bool> canConnect)
+        public Connector(NeuronNode host, Func<Connector, bool> canConnect)
         {
-            m_canConnect = canConnect;
+            _canConnect = canConnect;
+            _host = host;
         }
 
         #endregion
+
+        public NeuronNode Host => _host;
 
         #region Public Methods
 
@@ -31,7 +33,7 @@ namespace GraphView.Infrastructure.FrameworkDefaults
         /// <returns></returns>
         public virtual bool CanConnect(Connector connector)
         {
-            return m_canConnect == null || m_canConnect.Invoke(connector);
+            return _canConnect == null || _canConnect.Invoke(connector);
         }
 
         #endregion
@@ -41,8 +43,7 @@ namespace GraphView.Infrastructure.FrameworkDefaults
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
@@ -54,11 +55,11 @@ namespace GraphView.Infrastructure.FrameworkDefaults
         /// </summary>
         public virtual bool IsConnected
         {
-            get { return m_isConnected; }
+            get { return _isConnected; }
             set
             {
-                if (m_isConnected == value) return;
-                m_isConnected = value;
+                if (_isConnected == value) return;
+                _isConnected = value;
                 OnPropertyChanged();
             }
         }
@@ -83,20 +84,11 @@ namespace GraphView.Infrastructure.FrameworkDefaults
 
         #region Private fields
 
-        private bool m_isConnected;
-        private readonly Func<Connector, bool> m_canConnect;
+        private bool _isConnected;
+        private readonly Func<Connector, bool> _canConnect;
+        private readonly NeuronNode _host;
 
         #endregion
 
-        public void Input(double voltage)
-        {
-            var @event = OnVoltageChanged;
-            if (@event != null)
-            {
-                @event(this, voltage);
-            }
-        }
-
-        public event EventHandler<double> OnVoltageChanged;
     }
 }

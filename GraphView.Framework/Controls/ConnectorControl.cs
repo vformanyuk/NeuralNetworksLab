@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Data;
 using GraphView.Framework.Converters;
-using GraphView.Framework.Interfaces;
+using NeuralNetworkLab.Interfaces;
 
 namespace GraphView.Framework.Controls
 {
@@ -36,14 +36,14 @@ namespace GraphView.Framework.Controls
             }
 
             var offset = TranslatePoint(new Point(0, 0), parentNode);
-            m_currentControlOffest = new Point(offset.X + ActualWidth / 2, offset.Y + ActualHeight / 2);
+            _currentControlOffest = new Point(offset.X + ActualWidth / 2, offset.Y + ActualHeight / 2);
 
             SetBinding(XProperty,
                 new Binding("X")
                 {
                     Source = parentNode, 
                     Converter = new OffsetConverter(),
-                    ConverterParameter = m_currentControlOffest.X
+                    ConverterParameter = _currentControlOffest.X
                 });
 
             SetBinding(YProperty,
@@ -51,7 +51,7 @@ namespace GraphView.Framework.Controls
                 {
                     Source = parentNode,
                     Converter = new OffsetConverter(),
-                    ConverterParameter = m_currentControlOffest.Y
+                    ConverterParameter = _currentControlOffest.Y
                 });
         }
 
@@ -67,6 +67,6 @@ namespace GraphView.Framework.Controls
 
         #endregion
 
-        private Point m_currentControlOffest;
+        private Point _currentControlOffest;
     }
 }

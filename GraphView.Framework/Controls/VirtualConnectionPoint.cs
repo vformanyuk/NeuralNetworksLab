@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using GraphView.Framework.Interfaces;
+using NeuralNetworkLab.Interfaces;
 
 namespace GraphView.Framework.Controls
 {

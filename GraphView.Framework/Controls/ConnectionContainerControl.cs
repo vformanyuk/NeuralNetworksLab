@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using GraphView.Framework.Interfaces;
+using NeuralNetworkLab.Interfaces;
 
 namespace GraphView.Framework.Controls
 {

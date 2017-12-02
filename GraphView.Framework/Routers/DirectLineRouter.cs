@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using GraphView.Framework.Interfaces;
+using NeuralNetworkLab.Interfaces;
 
 namespace GraphView.Framework.Routers
 {

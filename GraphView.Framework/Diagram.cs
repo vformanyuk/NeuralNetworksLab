@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using GraphView.Framework.Interfaces;
+using NeuralNetworkLab.Interfaces;
 
 namespace GraphView.Framework
 {

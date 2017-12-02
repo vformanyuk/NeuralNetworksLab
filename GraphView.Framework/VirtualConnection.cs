@@ -2,8 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
-using GraphView.Framework.Interfaces;
 using GraphView.Framework.Routers;
+using NeuralNetworkLab.Interfaces;
 
 namespace GraphView.Framework
 {

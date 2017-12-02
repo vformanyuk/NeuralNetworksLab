@@ -42,13 +42,25 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-GraphView.Framework/bin/Debug/GraphView.Framework.dll
 *.pdb
 *.dll
 *.cache
 *.exe
+*.baml
 GraphView.Framework/bin/Debug/*.*
 GraphView.Framework/obj/Debug/*.*
-GraphView/bin/Debug/*.*
-GraphView/obj/Debug/*.*
-*.exe
+.vs
+GraphView.Infrastructure/bin/Debug/*.*
+GraphView.Infrastructure/bin/Release/*.*
+NeuralNetworksLab.App/bin/Debug/*.*
+NeuralNetworksLab.App/bin/Release/*.*
+GraphView.Infrastructure/obj/Debug/*.*
+GraphView.Infrastructure/obj/Release/*.*
+NeuralNetworksLab.App/obj/Debug/*.*
+NeuralNetworksLab.App/obj/Release/*.*
+packages/*/*.*
+packages/*/*/*/*.*
+Perseptron/bin/Debug/*.*
+Perseptron/bin/Release/*.*
+Perseptron/obj/Debug/*.*
+Perseptron/obj/Release/*.*

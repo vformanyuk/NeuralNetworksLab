@@ -1,39 +1,34 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
-using GraphView.Framework.Interfaces;
-using GraphView.Framework.Routers;
 using GraphView.Infrastructure.Annotations;
+using NeuralNetworkLab.Interfaces;
+using System.Reactive.Linq;
+using System;
 
-namespace GraphView.Infrastructure.FrameworkDefaults
+namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 {
-    public class Connection : IConnection, INotifyPropertyChanged
+    public class NeuroFiberConnection : IConnection, INotifyPropertyChanged
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConductingConnection"/> class.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="destination">The destination.</param>
-        public Connection(IConnectionPoint source, IConnectionPoint destination)
-            : this(source, destination, new DirectLineRouter())
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConductingConnection"/> class.
+        /// Initializes a new instance of the <see cref="NeuroFiberConnection"/> class.
         /// </summary>
         /// <param name="source">The source.</param>
         /// <param name="destination">The destination.</param>
         /// <param name="router">The router.</param>
-        public Connection(IConnectionPoint source, IConnectionPoint destination, IRouter router)
+        public NeuroFiberConnection(NeuroFiber model, IConnectionPoint source, IConnectionPoint destination, IRouter router)
         {
             StartPoint = source;
             EndPoint = destination;
             Router = router;
+
+            _model = model;
+            _model.Skip(TimeSpan.FromMilliseconds(500))
+                  .SubscribeOnDispatcher()
+                  .Subscribe(r => OnPropertyChanged(nameof(this.Weight)));
         }
 
         #endregion
@@ -59,10 +54,20 @@ namespace GraphView.Infrastructure.FrameworkDefaults
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        #endregion
+
+        #region Private fields
+        private readonly NeuroFiber _model;
+        #endregion
+
+        #region Public properties
+        public double Weight
+        {
+            get { return _model.Weight; }
+        }
         #endregion
 
         #region IConnection Members

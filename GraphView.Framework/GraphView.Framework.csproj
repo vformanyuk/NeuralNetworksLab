@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GraphView.Framework</RootNamespace>
     <AssemblyName>GraphView.Framework</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,24 +57,24 @@
     <Compile Include="Converters\OffsetConverter.cs" />
     <Compile Include="Diagram.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Interfaces\IConnection.cs" />
-    <Compile Include="Interfaces\IConnectionFactory.cs" />
-    <Compile Include="Interfaces\IConnectionPoint.cs" />
-    <Compile Include="Interfaces\IDiagram.cs" />
-    <Compile Include="Interfaces\IMovable.cs" />
-    <Compile Include="Interfaces\INode.cs" />
-    <Compile Include="Interfaces\IRouter.cs" />
-    <Compile Include="Interfaces\ISelectable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Routers\DirectLineRouter.cs" />
     <Compile Include="VirtualConnection.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\GraphView.Infrastructure\NeuralNetworkLab.Infrastructure.csproj">
+      <Project>{53f5aec9-06ad-459c-bc7c-5392007c980d}</Project>
+      <Name>NeuralNetworkLab.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Page Include="Themes\generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

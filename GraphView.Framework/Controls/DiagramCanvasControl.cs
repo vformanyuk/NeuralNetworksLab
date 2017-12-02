@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using GraphView.Framework.Interfaces;
+using NeuralNetworkLab.Interfaces;
 
 namespace GraphView.Framework.Controls
 {
@@ -28,9 +28,11 @@ namespace GraphView.Framework.Controls
         /// </summary>
         public DiagramCanvasControl()
         {
-            m_nodesSet = new Dictionary<INode, NodeContainerControl>();
-            m_connections = new Dictionary<IConnection, ConnectionContainerControl>();
-            m_selectedNodes = new HashSet<INode>();
+            _nodesSet = new Dictionary<INode, NodeContainerControl>();
+            _connections = new Dictionary<IConnection, ConnectionContainerControl>();
+            _selectedNodes = new HashSet<INode>();
+
+            Panel.SetZIndex(this, -1);
 
             Background = new SolidColorBrush(Colors.White);
         }
@@ -54,59 +56,61 @@ namespace GraphView.Framework.Controls
         {
             base.OnPreviewMouseDown(e);
 
-            m_currentPosition = e.GetPosition(this);
-            m_originPoint = m_currentPosition;
-            m_hittestElement = this.HitTest<BaseNodeControl>(m_currentPosition);
-            if (m_hittestElement != null) // if node based element is clicked
+            _currentPosition = e.GetPosition(this);
+            _originPoint = _currentPosition;
+            _hittestElement = this.HitTest<BaseNodeControl>(_currentPosition);
+            if (_hittestElement == null) // if node based element is clicked
             {
-                var connector = m_hittestElement as ConnectorControl;
-                if (connector != null)
+                return;
+            }
+
+            var connector = _hittestElement as ConnectorControl;
+            if (connector != null)
+            {
+                var sourceConnector = connector;
+
+                // if connector is already connected and Ctrl key pressed - start nodes reconnection
+                if (connector.ConnectionPoint.IsConnected && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
                 {
-                    var sourceConnector = connector;
-
-                    // if connector is already connected and Ctrl key pressed - start nodes reconnection
-                    if (connector.ConnectionPoint.IsConnected && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                    var connections = _connections.Where(c => c.Value.Source.Equals(connector) || c.Value.Destination.Equals(connector)).ToList();
+                    if (connections.Count > 0)
                     {
-                        var connections = m_connections.Where(c => c.Value.Source.Equals(connector) || c.Value.Destination.Equals(connector)).ToList();
-                        if (connections.Any())
+                        var record = connections.First();
+                        // this is not a misstake. 
+                        // If this is Source connector for connection then virtual connection should start from
+                        // oposit connector which is Destination and vice versa.
+                        if (record.Value.Source.Equals(connector))
                         {
-                            var record = connections.First();
-                            // this is not a misstake. 
-                            // If this is Source connector for connection then virtual connection should start from
-                            // oposit connector which is Destination and vice versa.
-                            if (record.Value.Source.Equals(connector))
-                            {
-                                sourceConnector = (ConnectorControl)record.Value.Destination;                                
-                            }
-                            else
-                            {
-                                sourceConnector = (ConnectorControl) record.Value.Source;
-                            }
-
-                            Diagram.Connections.Remove(record.Key);
+                            sourceConnector = (ConnectorControl)record.Value.Destination;
                         }
+                        else
+                        {
+                            sourceConnector = (ConnectorControl)record.Value.Source;
+                        }
+
+                        Diagram.Connections.Remove(record.Key);
                     }
-
-                    // if it is connector - create virtual connection
-                    // virtual elements excluded from hit test
-                    var virtualConnector = new VirtualConnectionPoint(sourceConnector)
-                    {
-                        X = m_currentPosition.X,
-                        Y = m_currentPosition.Y
-                    };
-                    Children.Add(virtualConnector);
-
-                    var virtualConnection = new VirtualConnection(sourceConnector.ConnectionPoint);
-                    var virtualConnectionContainer = new ConnectionContainerControl(sourceConnector, virtualConnector,
-                        virtualConnection, false);
-                    m_connections.Add(virtualConnection, virtualConnectionContainer);
-                    Children.Add(virtualConnectionContainer);
-
-                    m_hittestElement = virtualConnector;
                 }
 
-                m_hittestElement.CaptureMouse();
+                // if it is connector - create virtual connection
+                // virtual elements excluded from hit test
+                var virtualConnector = new VirtualConnectionPoint(sourceConnector)
+                {
+                    X = _currentPosition.X,
+                    Y = _currentPosition.Y
+                };
+                Children.Add(virtualConnector);
+
+                var virtualConnection = new VirtualConnection(sourceConnector.ConnectionPoint);
+                var virtualConnectionContainer = new ConnectionContainerControl(sourceConnector, virtualConnector,
+                    virtualConnection, false);
+                _connections.Add(virtualConnection, virtualConnectionContainer);
+                Children.Add(virtualConnectionContainer);
+
+                _hittestElement = virtualConnector;
             }
+
+            _hittestElement.CaptureMouse();
         }
 
         protected override void OnPreviewMouseMove(MouseEventArgs e)
@@ -115,29 +119,29 @@ namespace GraphView.Framework.Controls
 
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                var node = m_hittestElement as NodeContainerControl;
+                var node = _hittestElement as NodeContainerControl;
                 if (node != null)
                 {
-                    node.X += position.X - m_currentPosition.X;
-                    node.Y += position.Y - m_currentPosition.Y;
+                    node.X += position.X - _currentPosition.X;
+                    node.Y += position.Y - _currentPosition.Y;
 
                     if (node.Node.IsSelected)
                     {
-                        foreach (var selectedNode in m_selectedNodes.Where(n => n != node.Node))
+                        foreach (var selectedNode in _selectedNodes.Where(n => n != node.Node))
                         {
-                            selectedNode.X += position.X - m_currentPosition.X;
-                            selectedNode.Y += position.Y - m_currentPosition.Y;
+                            selectedNode.X += position.X - _currentPosition.X;
+                            selectedNode.Y += position.Y - _currentPosition.Y;
                         }
                     }
                 }
 
-                var virtualPoint = m_hittestElement as VirtualConnectionPoint;
+                var virtualPoint = _hittestElement as VirtualConnectionPoint;
                 if (virtualPoint != null)
                 {
-                    virtualPoint.X += position.X - m_currentPosition.X;
-                    virtualPoint.Y += position.Y - m_currentPosition.Y;
+                    virtualPoint.X += position.X - _currentPosition.X;
+                    virtualPoint.Y += position.Y - _currentPosition.Y;
 
-                    var hittest = this.AreaHitTest<ConnectorControl>(m_currentPosition,
+                    var hittest = this.AreaHitTest<ConnectorControl>(_currentPosition,
                         Constants.VirtualPointXOffset - 5);
 
                     if (hittest != null)
@@ -154,7 +158,7 @@ namespace GraphView.Framework.Controls
                     }
                 }
 
-                var rectangle = m_hittestElement as SelectionRect;
+                var rectangle = _hittestElement as SelectionRect;
                 if (rectangle != null) // update rectangle width/height
                 {
                     if (rectangle.SelectionStartPoint.X < position.X)
@@ -181,50 +185,50 @@ namespace GraphView.Framework.Controls
                 }
 
                 // if no node selected and drag sitance riched add Selection Rectangle
-                if (m_hittestElement == null && 
-                    (Math.Abs(m_currentPosition.X - m_originPoint.X) >= SystemParameters.MinimumHorizontalDragDistance ||
-                     Math.Abs(m_currentPosition.Y - m_originPoint.Y) >= SystemParameters.MinimumVerticalDragDistance))
+                if (_hittestElement == null && 
+                    (Math.Abs(_currentPosition.X - _originPoint.X) >= SystemParameters.MinimumHorizontalDragDistance ||
+                     Math.Abs(_currentPosition.Y - _originPoint.Y) >= SystemParameters.MinimumVerticalDragDistance))
                 {
-                    m_hittestElement = new SelectionRect(m_currentPosition.X, m_currentPosition.Y);
-                    Children.Add((UIElement)m_hittestElement);
-                    m_hittestElement.CaptureMouse();
+                    _hittestElement = new SelectionRect(_currentPosition.X, _currentPosition.Y);
+                    Children.Add((UIElement)_hittestElement);
+                    _hittestElement.CaptureMouse();
                 }
             }
 
-            m_currentPosition = position;
+            _currentPosition = position;
 
             base.OnPreviewMouseMove(e);
         }
 
         protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
         {
-            if (m_hittestElement != null)
+            if (_hittestElement != null)
             {
-                m_hittestElement.ReleaseMouseCapture();
+                _hittestElement.ReleaseMouseCapture();
 
-                var point = m_hittestElement as VirtualConnectionPoint;
+                var point = _hittestElement as VirtualConnectionPoint;
                 if (point != null)
                 {
-                    var hittest = this.AreaHitTest<ConnectorControl>(m_currentPosition, Constants.VirtualPointXOffset - 5);
+                    var hittest = this.AreaHitTest<ConnectorControl>(_currentPosition, Constants.VirtualPointXOffset - 5);
                     if (hittest != null && hittest.ConnectionPoint.CanConnect(point.SourceConnectionPoint))
                     {
                         // if captured element is VirtualConnector and hittest element is ConnectionPoint - create connection
-                        var newConnection = m_diagram.ConnectionsFactory.CreateConnection(point.SourceConnectionPoint,
+                        var newConnection = _diagram.ConnectionsFactory.CreateConnection(point.SourceConnectionPoint,
                             hittest.ConnectionPoint);
                         if (newConnection != null)
                         {
-                            m_diagram.Connections.Add(newConnection);
+                            _diagram.Connections.Add(newConnection);
 
                             // add connection contrainer control to canvas
                             var connectionContainer = new ConnectionContainerControl(point.SourceConnectorControl,
                                 hittest,
                                 newConnection);
-                            m_connections.Add(newConnection, connectionContainer);
+                            _connections.Add(newConnection, connectionContainer);
                             Children.Add(connectionContainer);
                         }
                     }
 
-                    var noneVirtualConnection = this.HitTest<ConnectionContainerControl>(m_currentPosition);
+                    var noneVirtualConnection = this.HitTest<ConnectionContainerControl>(_currentPosition);
                     if (noneVirtualConnection != null)
                     {
                         var oldSource = noneVirtualConnection.Source;
@@ -233,8 +237,8 @@ namespace GraphView.Framework.Controls
 
                         ConnectorControl middleConnector = new ConnectorControl
                         {
-                            X = m_currentPosition.X,
-                            Y = m_currentPosition.Y,
+                            X = _currentPosition.X,
+                            Y = _currentPosition.Y,
                             Width = 10,
                             Height = 10,
                             ConnectionPoint = Activator.CreateInstance(noneVirtualConnection.Connection.StartPoint.GetType()) as IConnectionPoint
@@ -243,55 +247,55 @@ namespace GraphView.Framework.Controls
                         Canvas.SetLeft(middleConnector, middleConnector.X - middleConnector.Width / 2);
                         Canvas.SetTop(middleConnector, middleConnector.Y - middleConnector.Height / 2);
 
-                        Children.Remove(m_connections[connectionContext]);
-                        m_connections.Remove(connectionContext);
+                        Children.Remove(_connections[connectionContext]);
+                        _connections.Remove(connectionContext);
 
                         Children.Add(middleConnector);
 
-                        var sourceToMiddle = m_diagram.ConnectionsFactory.CreateConnection(
+                        var sourceToMiddle = _diagram.ConnectionsFactory.CreateConnection(
                             connectionContext.StartPoint, middleConnector.ConnectionPoint);
-                        var middleToTarget = m_diagram.ConnectionsFactory.CreateConnection(
+                        var middleToTarget = _diagram.ConnectionsFactory.CreateConnection(
                             middleConnector.ConnectionPoint, connectionContext.EndPoint);
 
-                        m_diagram.Connections.Add(sourceToMiddle);
-                        m_diagram.Connections.Add(middleToTarget);
+                        _diagram.Connections.Add(sourceToMiddle);
+                        _diagram.Connections.Add(middleToTarget);
 
                         var sourceToMiddleContainer = new ConnectionContainerControl(oldSource, middleConnector, sourceToMiddle);
-                        m_connections.Add(sourceToMiddle, sourceToMiddleContainer);
+                        _connections.Add(sourceToMiddle, sourceToMiddleContainer);
                         Children.Add(sourceToMiddleContainer);
 
                         var middleToTargetContainer = new ConnectionContainerControl(middleConnector, oldDestination, middleToTarget);
-                        m_connections.Add(middleToTarget, middleToTargetContainer);
+                        _connections.Add(middleToTarget, middleToTargetContainer);
                         Children.Add(middleToTargetContainer);
 
                         // add connection from original node to middle connection point
-                        var newConnection = m_diagram.ConnectionsFactory.CreateConnection(point.SourceConnectionPoint, middleConnector.ConnectionPoint);
+                        var newConnection = _diagram.ConnectionsFactory.CreateConnection(point.SourceConnectionPoint, middleConnector.ConnectionPoint);
                         if (newConnection != null)
                         {
-                            m_diagram.Connections.Add(newConnection);
+                            _diagram.Connections.Add(newConnection);
                             var connectionContainer = new ConnectionContainerControl(point.SourceConnectorControl,
                                 middleConnector,
                                 newConnection);
-                            m_connections.Add(newConnection, connectionContainer);
+                            _connections.Add(newConnection, connectionContainer);
                             Children.Add(connectionContainer);
                         }
                     }
 
                     // remove virtual connection and point
                     Children.Remove(point);
-                    var virtualConnection = m_connections.Keys.FirstOrDefault(k => k is VirtualConnection);
+                    var virtualConnection = _connections.Keys.FirstOrDefault(k => k is VirtualConnection);
                     if (virtualConnection != null)
                     {
-                        Children.Remove(m_connections[virtualConnection]);
-                        m_connections.Remove(virtualConnection);
+                        Children.Remove(_connections[virtualConnection]);
+                        _connections.Remove(virtualConnection);
                     }
                 }
 
-                var selectionRect = m_hittestElement as SelectionRect;
+                var selectionRect = _hittestElement as SelectionRect;
                 if (selectionRect != null) // mass selection
                 {
-                    double selectionStartX = m_currentPosition.X;
-                    double selectionStartY = m_currentPosition.Y;
+                    double selectionStartX = _currentPosition.X;
+                    double selectionStartY = _currentPosition.Y;
 
                     if (selectionRect.SelectionStartPoint.X < selectionStartX)
                     {
@@ -318,14 +322,14 @@ namespace GraphView.Framework.Controls
                     Children.Remove(selectionRect);
                 }
 
-                var node = m_hittestElement as NodeContainerControl;
+                var node = _hittestElement as NodeContainerControl;
                 if (node != null && // single node selection
-                    Math.Abs(m_currentPosition.X - m_originPoint.X) <= SystemParameters.MinimumHorizontalDragDistance &&
-                    Math.Abs(m_currentPosition.Y - m_originPoint.Y) <= SystemParameters.MinimumVerticalDragDistance)
+                    Math.Abs(_currentPosition.X - _originPoint.X) <= SystemParameters.MinimumHorizontalDragDistance &&
+                    Math.Abs(_currentPosition.Y - _originPoint.Y) <= SystemParameters.MinimumVerticalDragDistance)
                 {
-                    if (m_selectedNodes.Count >= 1) // after mass selection remove selection from nodes other that clicked one
+                    if (_selectedNodes.Count >= 1) // after mass selection remove selection from nodes other that clicked one
                     {
-                        var removeSelection = m_selectedNodes.Where(n => !n.Equals(node.Node)).ToList();
+                        var removeSelection = _selectedNodes.Where(n => !n.Equals(node.Node)).ToList();
                         foreach (var selectedNode in removeSelection)
                         {
                             ToggleSelection(selectedNode, false);
@@ -339,10 +343,10 @@ namespace GraphView.Framework.Controls
                     }
                 }
 
-                var connectionCtrl = m_hittestElement as ConnectionContainerControl;
+                var connectionCtrl = _hittestElement as ConnectionContainerControl;
                 if (connectionCtrl != null) // connections selection
                 {
-                    var connections = m_connections.Where(c => c.Value.Equals(connectionCtrl)).Select(c => c.Key);
+                    var connections = _connections.Where(c => c.Value.Equals(connectionCtrl)).Select(c => c.Key);
                     foreach (var connection in connections)
                     {
                         connection.IsSelected = !connection.IsSelected;
@@ -352,14 +356,14 @@ namespace GraphView.Framework.Controls
             else
             {
                 // click on canvas clears selection
-                foreach (var selectedNode in m_selectedNodes)
+                foreach (var selectedNode in _selectedNodes)
                 {
                     selectedNode.IsSelected = false;
                 }
-                m_selectedNodes.Clear();
+                _selectedNodes.Clear();
             }
 
-            m_hittestElement = null;
+            _hittestElement = null;
             base.OnPreviewMouseUp(e);
         }
 
@@ -368,10 +372,10 @@ namespace GraphView.Framework.Controls
         /// </summary>
         private void AddExistingNodes()
         {
-            foreach (var node in m_diagram.ChildNodes)
+            foreach (var node in _diagram.ChildNodes)
             {
                 var control = new NodeContainerControl(node);
-                m_nodesSet.Add(node, control);
+                _nodesSet.Add(node, control);
                 Children.Add(control);
             }
         }
@@ -386,11 +390,11 @@ namespace GraphView.Framework.Controls
             node.IsSelected = isSelected;
             if (node.IsSelected)
             {
-                m_selectedNodes.Add(node);
+                _selectedNodes.Add(node);
             }
             else
             {
-                m_selectedNodes.Remove(node);
+                _selectedNodes.Remove(node);
             }
         }
 
@@ -407,22 +411,22 @@ namespace GraphView.Framework.Controls
                     foreach (var node in e.NewItems.OfType<INode>())
                     {
                         var control = new NodeContainerControl(node);
-                        m_nodesSet.Add(node, control);
+                        _nodesSet.Add(node, control);
                         Children.Add(control);
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    var toRemove = m_nodesSet.Where(n => e.OldItems.Contains(n.Key)).ToList();
+                    var toRemove = _nodesSet.Where(n => e.OldItems.Contains(n.Key)).ToList();
                     foreach (var pair in toRemove)
                     {
-                        m_nodesSet.Remove(pair.Key);
+                        _nodesSet.Remove(pair.Key);
                         Children.Remove(pair.Value);
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     Children.Clear();
-                    m_nodesSet.Clear();
-                    m_selectedNodes.Clear();
+                    _nodesSet.Clear();
+                    _selectedNodes.Clear();
                     break;
             }
         }
@@ -449,9 +453,9 @@ namespace GraphView.Framework.Controls
                         connection.StartPoint.IsConnected = false;
                         connection.EndPoint.IsConnected = false;
 
-                        var control = m_connections[connection];
+                        var control = _connections[connection];
                         Children.Remove(control);
-                        m_connections.Remove(connection);
+                        _connections.Remove(connection);
                     }
                     break;
             }
@@ -469,12 +473,12 @@ namespace GraphView.Framework.Controls
             var canvas = (DiagramCanvasControl) d;
             var diagram = (IDiagram) e.NewValue;
 
-            if (canvas.m_diagram != null)
+            if (canvas._diagram != null)
             {
-                canvas.m_diagram.ChildNodes.CollectionChanged -= canvas.ChildNodes_CollectionChanged;
-                canvas.m_diagram.Connections.CollectionChanged -= canvas.Connections_CollectionChanged;
+                canvas._diagram.ChildNodes.CollectionChanged -= canvas.ChildNodes_CollectionChanged;
+                canvas._diagram.Connections.CollectionChanged -= canvas.Connections_CollectionChanged;
             }
-            canvas.m_diagram = diagram;
+            canvas._diagram = diagram;
             diagram.ChildNodes.CollectionChanged += canvas.ChildNodes_CollectionChanged;
             diagram.Connections.CollectionChanged += canvas.Connections_CollectionChanged;
             canvas.AddExistingNodes();
@@ -484,12 +488,12 @@ namespace GraphView.Framework.Controls
 
         #region Private fields
 
-        private IDiagram m_diagram;
-        private readonly Dictionary<INode, NodeContainerControl> m_nodesSet;
-        private readonly Dictionary<IConnection, ConnectionContainerControl> m_connections;
-        private readonly HashSet<INode> m_selectedNodes; 
-        private IInputElement m_hittestElement;
-        private Point m_currentPosition, m_originPoint;
+        private IDiagram _diagram;
+        private readonly Dictionary<INode, NodeContainerControl> _nodesSet;
+        private readonly Dictionary<IConnection, ConnectionContainerControl> _connections;
+        private readonly HashSet<INode> _selectedNodes; 
+        private IInputElement _hittestElement;
+        private Point _currentPosition, _originPoint;
 
         #endregion
     }
