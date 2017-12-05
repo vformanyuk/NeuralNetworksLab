@@ -6,26 +6,26 @@ using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure
 {
-    public class NeuroFiber : ISubject<double>, ISupportLearning
+    public class NeuroFiber : ISubject<double>, ISupportLearning, IDisposable
     {
         private NeuronBase _source;
-        private HashSet<IObserver<double>> _targets = new HashSet<IObserver<double>>();
+        private List<IObserver<double>> _targets = new List<IObserver<double>>();
+
+        private IDisposable _sourceSubscribtionToken, _learnSubscribtionToken;
 
         public double Weight { get; set; }
 
-        private readonly ISettingsProvider _settings;
+        private readonly ISettingsProvider _settingsProvider;
 
-        public NeuroFiber(NeuronBase source, NeuronBase target, ISettingsProvider settings)
+        public NeuroFiber(NeuronBase source, NeuronBase target, ISettingsProvider settingsProvider)
         {
-            _settings = settings;
-
             _source = source;
-            _source.Subscribe(this);
+            _sourceSubscribtionToken = _source.Subscribe(this);
 
-            target.SubscribeLearner(this);
+            _learnSubscribtionToken = target.SubscribeLearner(this);
             _targets.Add(target);
 
-            //this.Weight = Settings.NextWeight;
+            _settingsProvider = settingsProvider;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace NeuralNetworkLab.Infrastructure
 
             // learn: weight = weight - source_output*weights_delta*learning_rate;
 
-            Weight = Weight - _source.Output * error;// * Settings.LearningRate;
+            Weight = Weight - _source.Output * error * _settingsProvider.LearningRate;
             _source.Learn(Weight * error);
         }
 
@@ -67,12 +67,18 @@ namespace NeuralNetworkLab.Infrastructure
         IDisposable IObservable<double>.Subscribe(IObserver<double> observer)
         {
             _targets.Add(observer);
-            return new SubscribtionToken(observer, o => _targets.Remove(o));
+            return new SubscribtionToken<IObserver<double>>(observer, o => _targets.Remove(o));
         }
 
         public override string ToString()
         {
             return this.Weight.ToString();
+        }
+
+        public void Dispose()
+        {
+            _sourceSubscribtionToken.Dispose();
+            _learnSubscribtionToken.Dispose();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 
         #endregion
 
-        public NeuronNode Host => _host;
+        public INode Host => _host;
 
         #region Public Methods
 

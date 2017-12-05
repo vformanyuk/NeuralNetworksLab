@@ -8,10 +8,10 @@ namespace NeuralNetworkLab.Infrastructure
     public class NeuronBase : ISubject<double>, ISupportLearning
     {
         // goes from source neuron to target one
-        protected readonly HashSet<IObserver<double>> _axons = new HashSet<IObserver<double>>();
+        protected readonly List<IObserver<double>> _axons = new List<IObserver<double>>();
 
         // dendrits that will adjust thier weights with learning error
-        protected readonly HashSet<ISupportLearning> _learningDendrits = new HashSet<ISupportLearning>();
+        protected readonly List<ISupportLearning> _learningDendrits = new List<ISupportLearning>();
 
         public double Output { get; protected set; }
 
@@ -20,31 +20,20 @@ namespace NeuralNetworkLab.Infrastructure
         /// </summary>
         public double Bias { get; set; }
 
-        public int DendritsCount
-        {
-            get
-            {
-                return _learningDendrits.Count;
-            }
-        }
+        public int DendritsCount => _learningDendrits.Count;
 
-        public int AxonsCount
-        {
-            get
-            {
-                return this._axons.Count;
-            }
-        }
+        public int AxonsCount => _axons.Count;
 
         public IDisposable Subscribe(IObserver<double> observer)
         {
             _axons.Add(observer);
-            return new SubscribtionToken(observer, o => _axons.Remove(o));
+            return new SubscribtionToken<IObserver<double>>(observer, o => _axons.Remove(o));
         }
 
-        public void SubscribeLearner(ISupportLearning learner)
+        public IDisposable SubscribeLearner(ISupportLearning learner)
         {
             _learningDendrits.Add(learner);
+            return new SubscribtionToken<ISupportLearning>(learner, o => _learningDendrits.Remove(o));
         }
 
         protected void PropogateError(double error)

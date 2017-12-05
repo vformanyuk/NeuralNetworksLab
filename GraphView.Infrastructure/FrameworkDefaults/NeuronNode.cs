@@ -6,17 +6,18 @@ using NeuralNetworkLab.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 {
-    public class NeuronNode : INode, INotifyPropertyChanged
+    public class NeuronNode : INode, INotifyPropertyChanged, IDisposable
     {
         public NeuronNode(NeuronBase model)
         {
             _model = model;
-            model.Distinct()
-                 .ObserveOnDispatcher()
-                 .Skip(TimeSpan.FromMilliseconds(500)).Subscribe(r =>
-                 {
-                     OnPropertyChanged(nameof(this.NeuronPotential));
-                 });
+            _subscribtionToken = model.Distinct()
+                                     .ObserveOnDispatcher()
+                                     .Sample(TimeSpan.FromMilliseconds(500))
+                                     .Subscribe(r =>
+                                     {
+                                         OnPropertyChanged(nameof(this.NeuronPotential));
+                                     });
         }
 
         #region Private Methods
@@ -80,7 +81,13 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         private double _x, _y;
         private bool _isSelected;
         private NeuronBase _model;
+        private IDisposable _subscribtionToken;
         #endregion
+
+        public void Dispose()
+        {
+            _subscribtionToken.Dispose();
+        }
 
         public virtual bool IsSelected
         {
@@ -98,5 +105,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         {
             get { return _model.Output; }
         }
+
+        public NeuronBase Model => _model;
     }
 }

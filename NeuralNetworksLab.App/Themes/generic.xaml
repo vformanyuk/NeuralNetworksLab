@@ -9,4 +9,14 @@
             </Border>
         </controls:ConnectorControl>
     </DataTemplate>
+
+    <DataTemplate DataType="{x:Type default:NeuroFiberConnection}">
+        <Polyline Stroke="Black" StrokeThickness="2" Points="{Binding Path=Data}">
+            <!--<Polyline.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Test"></MenuItem>
+                </ContextMenu>
+            </Polyline.ContextMenu>-->
+        </Polyline>
+    </DataTemplate>
 </ResourceDictionary>

@@ -8,5 +8,6 @@ namespace NeuralNetworkLab.Infrastructure.Interfaces
 {
     public interface ISettingsProvider
     {
+        double LearningRate { get; set; }
     }
 }

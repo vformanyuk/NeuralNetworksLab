@@ -3,6 +3,7 @@
     public interface IConnectionPoint
     {
         bool IsConnected { get; set; }
+        INode Host { get; }
         bool CanConnect(IConnectionPoint connectionPoint);
     }
 }

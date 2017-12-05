@@ -9,5 +9,6 @@ namespace NeuralNetworksLab.App.Services
 {
     public class SettingsProvider : ISettingsProvider
     {
+        public double LearningRate { get; set; }
     }
 }

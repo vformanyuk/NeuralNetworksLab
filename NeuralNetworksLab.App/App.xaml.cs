@@ -40,10 +40,11 @@ namespace NeuralNetworksLab.App
             }
 
             builder.RegisterInstance(new Services.SettingsProvider()).As<ISettingsProvider>().ExternallyOwned();
+            builder.RegisterType<MainViewModel>().SingleInstance();
 
             var contrianer = builder.Build();
 
-            var mainViewModel = new MainViewModel(contrianer.Resolve<ISettingsProvider>());
+            var mainViewModel = contrianer.Resolve<MainViewModel>();
             foreach(var plugin in contrianer.Resolve<IEnumerable<NeuralNetworkLabPlugin>>())
             {
                 mainViewModel.AddPlugin(plugin);

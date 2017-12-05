@@ -456,6 +456,7 @@ namespace GraphView.Framework.Controls
                         var control = _connections[connection];
                         Children.Remove(control);
                         _connections.Remove(connection);
+                        _diagram.ConnectionsFactory.ConnectionRemoved(connection);
                     }
                     break;
             }

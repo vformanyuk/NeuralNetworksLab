@@ -2,13 +2,13 @@
 
 namespace NeuralNetworkLab.Infrastructure
 {
-    public class SubscribtionToken : IDisposable
+    public class SubscribtionToken<T> : IDisposable
     {
-        public IObserver<double> Observer { get; }
+        public T Observer { get; }
 
-        private readonly Action<IObserver<double>> _clearAction;
+        private readonly Action<T> _clearAction;
 
-        public SubscribtionToken(IObserver<double> observer, Action<IObserver<double>> clearAction)
+        public SubscribtionToken(T observer, Action<T> clearAction)
         {
             this.Observer = observer;
             this._clearAction = clearAction;

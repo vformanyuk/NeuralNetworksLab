@@ -19,16 +19,11 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         /// <param name="source">The source.</param>
         /// <param name="destination">The destination.</param>
         /// <param name="router">The router.</param>
-        public NeuroFiberConnection(NeuroFiber model, IConnectionPoint source, IConnectionPoint destination, IRouter router)
+        public NeuroFiberConnection(IConnectionPoint source, IConnectionPoint destination, IRouter router)
         {
             StartPoint = source;
             EndPoint = destination;
             Router = router;
-
-            _model = model;
-            _model.Skip(TimeSpan.FromMilliseconds(500))
-                  .SubscribeOnDispatcher()
-                  .Subscribe(r => OnPropertyChanged(nameof(this.Weight)));
         }
 
         #endregion
@@ -46,7 +41,6 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
             Data = new PointCollection(Router.CalculateGeometry(startPoint, endPoint));
             OnPropertyChanged("Data");
         }
-
         #endregion
 
         #region Private Methods
@@ -60,13 +54,38 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         #endregion
 
         #region Private fields
-        private readonly NeuroFiber _model;
+        private NeuroFiber _model;
+        private IDisposable _subscribtionToken;
         #endregion
 
         #region Public properties
         public double Weight
         {
-            get { return _model.Weight; }
+            get { return _model?.Weight ?? 0; }
+        }
+
+        public NeuroFiber Model
+        {
+            get
+            {
+                return _model;
+            }
+            set
+            {
+                if (_model != null)
+                {
+                    _subscribtionToken.Dispose();
+                }
+
+                _model = value;
+
+                if (_model != null)
+                {
+                    _subscribtionToken = _model.Sample(TimeSpan.FromMilliseconds(500))
+                                               .SubscribeOnDispatcher()
+                                               .Subscribe(r => OnPropertyChanged(nameof(this.Weight)));
+                }
+            }
         }
         #endregion
 
