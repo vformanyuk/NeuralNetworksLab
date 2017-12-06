@@ -8,5 +8,7 @@ namespace NeuralNetworkLab.Infrastructure.Interfaces
 {
     public interface IPropertiesProvider
     {
+        //IReadOnlyDictionary<string, INeuronProperty> Properties { get; }
+        void Load(NeuronBase model);
     }
 }

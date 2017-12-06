@@ -55,6 +55,7 @@
     <Compile Include="Module.cs" />
     <Compile Include="Perseptron.cs" />
     <Compile Include="PerseptronNode.cs" />
+    <Compile Include="PerseptronProperties.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

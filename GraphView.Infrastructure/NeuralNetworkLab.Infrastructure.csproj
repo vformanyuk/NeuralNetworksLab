@@ -73,12 +73,14 @@
     <Compile Include="Interfaces\IConnectionPoint.cs" />
     <Compile Include="Interfaces\IDiagram.cs" />
     <Compile Include="Interfaces\IMovable.cs" />
+    <Compile Include="Interfaces\IGenericProperty.cs" />
     <Compile Include="Interfaces\INode.cs" />
     <Compile Include="Interfaces\IPropertiesProvider.cs" />
     <Compile Include="Interfaces\IRouter.cs" />
     <Compile Include="Interfaces\ISelectable.cs" />
     <Compile Include="Interfaces\ISettingsProvider.cs" />
     <Compile Include="Interfaces\ISupportLearning.cs" />
+    <Compile Include="Common\NeuralNetworkProperty.cs" />
     <Compile Include="NeuralNetworkLabPlugin.cs" />
     <Compile Include="NeuroFiber.cs" />
     <Compile Include="NeuronBase.cs" />

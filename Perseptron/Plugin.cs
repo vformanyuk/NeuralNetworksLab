@@ -9,7 +9,7 @@ namespace Perseptron
     {
         public Plugin(ISettingsProvider settings) : base(settings)
         {
-
+            // settings.SetNeuronTypeSettings (add settings specific for this neuron type)
         }
 
         public override IToolbarElement ToolbarElement => throw new NotImplementedException();
