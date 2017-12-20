@@ -20,7 +20,7 @@ namespace NeuralNetworksLab.App.ViewModels
         private IDiagram _diagram;
         private ISettingsProvider _settings;
         private ConnectionsFactory _neuroFibersConnectionFactory;
-        private readonly List<NeuralNetworkLabPlugin> _plugins = new List<NeuralNetworkLabPlugin>();
+        private readonly List<NeuralNetworkLabPlugin> _plugins;
 
         private readonly List<NeuronBase> _neurons = new List<NeuronBase>();
         private readonly List<NeuroFiber> _fibers = new List<NeuroFiber>();
@@ -36,7 +36,7 @@ namespace NeuralNetworksLab.App.ViewModels
             _diagram.ChildNodes.Add(node);
         });
 
-        public MainViewModel(ISettingsProvider settings)
+        public MainViewModel(ISettingsProvider settings, IEnumerable<NeuralNetworkLabPlugin> plugins)
         {
             _neuroFibersConnectionFactory = new ConnectionsFactory(settings);
             _neuroFibersConnectionFactory.ConnectionAdded += OnConnectionAdded;
@@ -44,6 +44,7 @@ namespace NeuralNetworksLab.App.ViewModels
 
             _diagram = new Diagram(_neuroFibersConnectionFactory);
             _settings = settings;
+            _plugins = plugins.ToList();
         }
 
         private void OnConnectionRemoved(object sender, ConnectionEventArgs e)
@@ -62,11 +63,6 @@ namespace NeuralNetworksLab.App.ViewModels
 
             var fiberModel = new NeuroFiber(sourceNode.Model, destinationNode.Model, _settings);
             connection.Model = fiberModel;
-        }
-
-        public void AddPlugin(NeuralNetworkLabPlugin plugin)
-        {
-            _plugins.Add(plugin);
         }
     }
 }

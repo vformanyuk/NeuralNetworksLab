@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure.Common
 {
-    public abstract class NeuralNetworkProperty<T> : IGenericProperty
+    public abstract class NeuralNetworkProperty<T> : IGenericProperty, INotifyPropertyChanged
     {
         protected NeuralNetworkProperty(string name, Action<T> propertySetter, UIElement customEditor = null, IReadOnlyDictionary<string, T> defaultValues = null)
         {
-            DisplayName = name;
+            PropertyName = name;
             PropertySetter = propertySetter;
             CustomEditor = customEditor;
             ValuesCollection = defaultValues;
@@ -21,20 +19,29 @@ namespace NeuralNetworkLab.Infrastructure.Common
         public Action<T> PropertySetter
         {
             get;
-            private set;
+            protected set;
         }
 
-        public IReadOnlyDictionary<string, T> ValuesCollection { get; }
+        public IReadOnlyDictionary<string, T> ValuesCollection { get; protected set; }
 
-        public string DisplayName { get; }
+        public string PropertyName { get; }
 
-        public bool IsReadonly
+        private bool _isReadonly;
+        public virtual bool IsReadonly
         {
-            get;
-            set;
+            get
+            {
+                return _isReadonly;
+            }
+            set
+            {
+                if (_isReadonly == value) return;
+                _isReadonly = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsReadonly)));
+            }
         }
 
-        public T Value { get; }
+        public T Value { get; protected set; }
 
         object IGenericProperty.Value
         {
@@ -44,6 +51,8 @@ namespace NeuralNetworkLab.Infrastructure.Common
             }
         }
 
-        public UIElement CustomEditor { get; }
+        public UIElement CustomEditor { get; protected set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

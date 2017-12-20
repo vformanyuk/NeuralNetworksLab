@@ -65,6 +65,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ActivationFunctionProperty.cs" />
+    <Compile Include="Common\Functors\ReLu.cs" />
+    <Compile Include="Common\Functors\ReLuDerivative.cs" />
+    <Compile Include="Common\Functors\Sigmoid.cs" />
+    <Compile Include="Common\Functors\SigmoidDerivative.cs" />
     <Compile Include="FrameworkDefaults\NeuroFiberConnection.cs" />
     <Compile Include="FrameworkDefaults\Connector.cs" />
     <Compile Include="FrameworkDefaults\NeuronNode.cs" />
@@ -72,6 +77,7 @@
     <Compile Include="Interfaces\IConnectionFactory.cs" />
     <Compile Include="Interfaces\IConnectionPoint.cs" />
     <Compile Include="Interfaces\IDiagram.cs" />
+    <Compile Include="Interfaces\IFunctor.cs" />
     <Compile Include="Interfaces\IMovable.cs" />
     <Compile Include="Interfaces\IGenericProperty.cs" />
     <Compile Include="Interfaces\INode.cs" />
@@ -93,6 +99,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

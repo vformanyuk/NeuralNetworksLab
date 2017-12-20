@@ -44,14 +44,10 @@ namespace NeuralNetworksLab.App
 
             var contrianer = builder.Build();
 
-            var mainViewModel = contrianer.Resolve<MainViewModel>();
-            foreach(var plugin in contrianer.Resolve<IEnumerable<NeuralNetworkLabPlugin>>())
+            this.MainWindow = new MainWindow
             {
-                mainViewModel.AddPlugin(plugin);
-            }
-
-            this.MainWindow = new MainWindow();
-            this.MainWindow.DataContext = mainViewModel;
+                DataContext = contrianer.Resolve<MainViewModel>()
+            };
             this.MainWindow.Show();
         }
     }

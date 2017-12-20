@@ -10,10 +10,11 @@ namespace Perseptron
 {
     public class PerseptronProperties : IPropertiesProvider
     {
-        private readonly ISettingsProvider _settingsProvider;
+        protected readonly ISettingsProvider _settingsProvider;
 
         public PerseptronProperties(ISettingsProvider settings)
         {
+            _settingsProvider = settings;
         }
 
         public void Load(NeuronBase model)

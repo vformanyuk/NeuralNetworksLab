@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NeuralNetworkLab.Infrastructure.Interfaces
 {
     public interface ISettingsProvider
     {
         double LearningRate { get; set; }
+
+        void AddProperty(Type neuronType, IGenericProperty property);
+
+        IReadOnlyDictionary<string, IGenericProperty> this[Type neuronType]
+        {
+            get;
+        }
     }
 }

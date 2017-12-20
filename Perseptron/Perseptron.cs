@@ -1,5 +1,6 @@
-﻿using System;
-using NeuralNetworkLab.Infrastructure;
+﻿using NeuralNetworkLab.Infrastructure;
+using NeuralNetworkLab.Infrastructure.Common;
+using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace Perseptron
 {
@@ -10,12 +11,16 @@ namespace Perseptron
         private uint _neuroImpulses = 0;
         private uint _backNeuroimpulses = 0;
 
-        public Func<double, double> ActivationFunction { get; set; }
-        public Func<double, double> ActivationFunctionDx { get; set; }
+        private readonly ActivationFunctionProperty _activationFunction;
+
+        public Perseptron(ISettingsProvider settings)
+        {
+            _activationFunction = (ActivationFunctionProperty)settings[this.GetType()][Plugin.PerseptronActivationFunctionSettingsKey];
+        }
 
         public override void Learn(double error)
         {
-            _internalErrorAccumulator += error * ActivationFunctionDx.Invoke(this.Output);
+            _internalErrorAccumulator += error * _activationFunction.Derivative.Invoke(this.Output);
             _backNeuroimpulses++;
             if (_backNeuroimpulses >= this.AxonsCount)
             {
@@ -31,7 +36,7 @@ namespace Perseptron
             _neuroImpulses++;
             if (_neuroImpulses >= this.DendritsCount)
             {
-                Output = ActivationFunction(_internalAccumulator + this.Bias);
+                Output = _activationFunction.Value.Invoke(_internalAccumulator + this.Bias);
 
                 _internalAccumulator = 0;
                 _neuroImpulses = 0;
