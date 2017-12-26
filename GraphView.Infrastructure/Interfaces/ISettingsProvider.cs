@@ -7,9 +7,9 @@ namespace NeuralNetworkLab.Infrastructure.Interfaces
     {
         double LearningRate { get; set; }
 
-        void AddProperty(Type neuronType, IGenericProperty property);
+        void AddProperty(Type neuronType, ISettingsItem property);
 
-        IReadOnlyDictionary<string, IGenericProperty> this[Type neuronType]
+        IReadOnlyDictionary<string, ISettingsItem> this[Type neuronType]
         {
             get;
         }

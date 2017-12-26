@@ -1,5 +1,6 @@
 ﻿using NeuralNetworkLab.Infrastructure;
 using NeuralNetworkLab.Infrastructure.Common;
+using NeuralNetworkLab.Infrastructure.Common.Settings;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace Perseptron
@@ -11,16 +12,38 @@ namespace Perseptron
         private uint _neuroImpulses = 0;
         private uint _backNeuroimpulses = 0;
 
-        private readonly ActivationFunctionProperty _activationFunction;
-
         public Perseptron(ISettingsProvider settings)
         {
-            _activationFunction = (ActivationFunctionProperty)settings[this.GetType()][Plugin.PerseptronActivationFunctionSettingsKey];
+            var settingsActivationFunction = (ActivationFunctionSettingsItem)settings[this.GetType()][Plugin.PerseptronActivationFunctionSettingsKey];
+            settingsActivationFunction.Changed += (o, e) =>
+             {
+                 var af = (ActivationFunctionSettingsItem)o;
+                 this.ActivationFunction = af.Value;
+                 this.ActivationFunctionDerivative = af.Derivative;
+             };
+        }
+
+        public IFunctor ActivationFunction
+        {
+            get;
+            internal set;
+        }
+
+        public IFunctor ActivationFunctionDerivative
+        {
+            get;
+            internal set;
+        }
+
+        public double Bias
+        {
+            get;
+            internal set;
         }
 
         public override void Learn(double error)
         {
-            _internalErrorAccumulator += error * _activationFunction.Derivative.Invoke(this.Output);
+            _internalErrorAccumulator += error * this.ActivationFunctionDerivative.Invoke(this.Output);
             _backNeuroimpulses++;
             if (_backNeuroimpulses >= this.AxonsCount)
             {
@@ -36,7 +59,7 @@ namespace Perseptron
             _neuroImpulses++;
             if (_neuroImpulses >= this.DendritsCount)
             {
-                Output = _activationFunction.Value.Invoke(_internalAccumulator + this.Bias);
+                Output = this.ActivationFunction.Invoke(_internalAccumulator + this.Bias);
 
                 _internalAccumulator = 0;
                 _neuroImpulses = 0;

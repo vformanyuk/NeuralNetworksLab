@@ -65,11 +65,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\ActivationFunctionProperty.cs" />
+    <Compile Include="Common\Properties\ActivationFunctionProperty.cs" />
+    <Compile Include="Common\Settings\ActivationFunctionSettingsItem.cs" />
+    <Compile Include="Common\Properties\DoubleProperty.cs" />
     <Compile Include="Common\Functors\ReLu.cs" />
     <Compile Include="Common\Functors\ReLuDerivative.cs" />
     <Compile Include="Common\Functors\Sigmoid.cs" />
     <Compile Include="Common\Functors\SigmoidDerivative.cs" />
+    <Compile Include="Common\Settings\SettingsItem.cs" />
     <Compile Include="FrameworkDefaults\NeuroFiberConnection.cs" />
     <Compile Include="FrameworkDefaults\Connector.cs" />
     <Compile Include="FrameworkDefaults\NeuronNode.cs" />
@@ -84,9 +87,10 @@
     <Compile Include="Interfaces\IPropertiesProvider.cs" />
     <Compile Include="Interfaces\IRouter.cs" />
     <Compile Include="Interfaces\ISelectable.cs" />
+    <Compile Include="Interfaces\ISettingsItem.cs" />
     <Compile Include="Interfaces\ISettingsProvider.cs" />
     <Compile Include="Interfaces\ISupportLearning.cs" />
-    <Compile Include="Common\NeuralNetworkProperty.cs" />
+    <Compile Include="Common\Properties\NeuralNetworkProperty.cs" />
     <Compile Include="NeuralNetworkLabPlugin.cs" />
     <Compile Include="NeuroFiber.cs" />
     <Compile Include="NeuronBase.cs" />

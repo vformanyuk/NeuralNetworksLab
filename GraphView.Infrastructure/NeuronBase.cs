@@ -15,11 +15,6 @@ namespace NeuralNetworkLab.Infrastructure
 
         public double Output { get; protected set; }
 
-        /// <summary>
-        /// Bias value to use with signal accumulation
-        /// </summary>
-        public double Bias { get; set; }
-
         public int DendritsCount => _learningDendrits.Count;
 
         public int AxonsCount => _axons.Count;

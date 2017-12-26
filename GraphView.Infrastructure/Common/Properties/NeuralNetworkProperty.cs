@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
-namespace NeuralNetworkLab.Infrastructure.Common
+namespace NeuralNetworkLab.Infrastructure.Common.Properites
 {
     public abstract class NeuralNetworkProperty<T> : IGenericProperty, INotifyPropertyChanged
     {
