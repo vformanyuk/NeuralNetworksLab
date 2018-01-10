@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NeuralNetworkLab.Infrastructure.Common.Functors;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
-namespace NeuralNetworkLab.Infrastructure.Common.Properites
+namespace NeuralNetworkLab.Infrastructure.Common.Properties
 {
     public class ActivationFunctionProperty : NeuralNetworkProperty<IFunctor>
     {

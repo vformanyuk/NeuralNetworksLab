@@ -8,6 +8,8 @@ namespace NeuralNetworkLab.Infrastructure.Interfaces
         event EventHandler Loaded;
         IReadOnlyDictionary<string, IGenericProperty> Properties { get; }
         void Load(NeuronBase model);
+        void Load(Layer layer);
+        void Load(IEnumerable<NeuronBase> model);
         void Commit();
     }
 }

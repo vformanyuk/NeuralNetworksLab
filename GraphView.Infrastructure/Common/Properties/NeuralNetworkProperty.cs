@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
-namespace NeuralNetworkLab.Infrastructure.Common.Properites
+namespace NeuralNetworkLab.Infrastructure.Common.Properties
 {
     public abstract class NeuralNetworkProperty<T> : IGenericProperty, INotifyPropertyChanged
     {
@@ -29,10 +29,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properites
         private bool _isReadonly;
         public virtual bool IsReadonly
         {
-            get
-            {
-                return _isReadonly;
-            }
+            get => _isReadonly;
             set
             {
                 if (_isReadonly == value) return;
@@ -43,13 +40,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properites
 
         public T Value { get; protected set; }
 
-        object IGenericProperty.Value
-        {
-            get
-            {
-                return this.Value;
-            }
-        }
+        object IGenericProperty.Value => this.Value;
 
         public UIElement CustomEditor { get; protected set; }
 

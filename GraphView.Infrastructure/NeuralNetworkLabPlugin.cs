@@ -14,8 +14,6 @@ namespace NeuralNetworkLab.Infrastructure
         public abstract NeuronNode CreateNeuronNode(NeuronBase neuron);
         public abstract NeuronBase CreateNeuronModel();
 
-        public abstract IToolbarElement ToolbarElement { get; }
-
         public abstract IPropertiesProvider Properties { get; }
     }
 }

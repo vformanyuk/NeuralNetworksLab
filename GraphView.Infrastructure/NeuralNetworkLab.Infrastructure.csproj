@@ -66,6 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Properties\ActivationFunctionProperty.cs" />
+    <Compile Include="Common\Properties\BooleanProperty.cs" />
+    <Compile Include="Common\Properties\CharProperty.cs" />
+    <Compile Include="Common\Properties\FileSelectProperty.cs" />
     <Compile Include="Common\Settings\ActivationFunctionSettingsItem.cs" />
     <Compile Include="Common\Properties\DoubleProperty.cs" />
     <Compile Include="Common\Functors\ReLu.cs" />
@@ -91,12 +94,15 @@
     <Compile Include="Interfaces\ISettingsProvider.cs" />
     <Compile Include="Interfaces\ISupportLearning.cs" />
     <Compile Include="Common\Properties\NeuralNetworkProperty.cs" />
+    <Compile Include="Layer.cs" />
     <Compile Include="NeuralNetworkLabPlugin.cs" />
     <Compile Include="NeuroFiber.cs" />
     <Compile Include="NeuronBase.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Interfaces\IToolbarElement.cs" />
+    <Compile Include="Sensor.cs" />
+    <Compile Include="SensorLayers\CsvSensorLayer.cs" />
+    <Compile Include="SensorLayers\CsvSensorLayerProperties.cs" />
     <Compile Include="SubscribtionToken.cs" />
   </ItemGroup>
   <ItemGroup>

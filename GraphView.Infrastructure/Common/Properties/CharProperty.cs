@@ -2,9 +2,10 @@
 
 namespace NeuralNetworkLab.Infrastructure.Common.Properties
 {
-    public class DoubleProperty : NeuralNetworkProperty<double>
+    public class CharProperty : NeuralNetworkProperty<char>
     {
-        public DoubleProperty(string name, Action<double> setter, double? defaultValue) : base(name, setter)
+        public CharProperty(string name, Action<char> propertySetter, char? defaultValue = null) 
+            : base(name, propertySetter)
         {
             if (defaultValue.HasValue)
             {

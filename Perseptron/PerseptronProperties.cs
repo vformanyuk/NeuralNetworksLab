@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NeuralNetworkLab.Infrastructure;
 using NeuralNetworkLab.Infrastructure.Common;
-using NeuralNetworkLab.Infrastructure.Common.Properites;
+using NeuralNetworkLab.Infrastructure.Common.Properties;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace Perseptron
@@ -55,6 +55,16 @@ namespace Perseptron
         public void Load(NeuronBase model)
         {
             this.Load(model as Perseptron);
+        }
+
+        public void Load(Layer layer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Load(IEnumerable<NeuronBase> layer)
+        {
+            throw new NotImplementedException();
         }
     }
 }
