@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace NeuralNetworkLab.Interfaces
 {
@@ -8,6 +9,8 @@ namespace NeuralNetworkLab.Interfaces
 
         IConnectionsFactory ConnectionsFactory { get; }
 
-        ObservableCollection<IConnection> Connections { get; } 
+        ObservableCollection<IConnection> Connections { get; }
+
+        event EventHandler NodeSelectionChanged;
     }
 }

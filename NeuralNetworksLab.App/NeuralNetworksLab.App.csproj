@@ -64,6 +64,8 @@
     </ApplicationDefinition>
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Events\ConnectionEventArgs.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Routers\LineRouter.cs" />
     <Compile Include="Services\ConnectionsFactory.cs" />
     <Compile Include="Services\SettingsProvider.cs" />

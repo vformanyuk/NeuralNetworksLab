@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -9,16 +11,20 @@ using NeuralNetworkLab.Infrastructure;
 using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 using NeuralNetworkLab.Interfaces;
+using NeuralNetworksLab.App.Annotations;
 using NeuralNetworksLab.App.Commands;
 using NeuralNetworksLab.App.Events;
 using NeuralNetworksLab.App.Services;
 
 namespace NeuralNetworksLab.App.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
-        private IDiagram _diagram;
-        private ISettingsProvider _settings;
+        private readonly IDiagram _diagram;
+        private readonly ISettingsProvider _settings;
+
+        private IPropertiesProvider _propertiesProvider;
+
         private ConnectionsFactory _neuroFibersConnectionFactory;
         private readonly List<NeuralNetworkLabPlugin> _plugins;
 
@@ -26,6 +32,16 @@ namespace NeuralNetworksLab.App.ViewModels
         private readonly List<NeuroFiber> _fibers = new List<NeuroFiber>();
 
         public IDiagram Diagram => _diagram;
+
+        public IPropertiesProvider Properties
+        {
+            get => _propertiesProvider;
+            private set
+            {
+                _propertiesProvider = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ICommand AddNodeCommand => new DelegateCommand(_ =>
         {
@@ -43,8 +59,17 @@ namespace NeuralNetworksLab.App.ViewModels
             _neuroFibersConnectionFactory.ConnectionRemoved += OnConnectionRemoved;
 
             _diagram = new Diagram(_neuroFibersConnectionFactory);
+            _diagram.NodeSelectionChanged += NodeSelectionChanged;
+
             _settings = settings;
+
             _plugins = plugins.ToList();
+        }
+
+        private void NodeSelectionChanged(object sender, EventArgs e)
+        {
+            var selectedNodes = _diagram.ChildNodes.Select(n => n.IsSelected).ToList();
+
         }
 
         private void OnConnectionRemoved(object sender, ConnectionEventArgs e)
@@ -63,6 +88,14 @@ namespace NeuralNetworksLab.App.ViewModels
 
             var fiberModel = new NeuroFiber(sourceNode.Model, destinationNode.Model, _settings);
             connection.Model = fiberModel;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

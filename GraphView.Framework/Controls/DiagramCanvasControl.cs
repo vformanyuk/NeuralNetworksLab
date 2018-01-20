@@ -320,6 +320,8 @@ namespace GraphView.Framework.Controls
 
                     // remove selection rectangle
                     Children.Remove(selectionRect);
+
+                    TryRaiseNodeSelectionChanged();
                 }
 
                 var node = _hittestElement as NodeContainerControl;
@@ -341,6 +343,8 @@ namespace GraphView.Framework.Controls
                     {
                         ToggleSelection(node.Node, !node.Node.IsSelected);
                     }
+
+                    TryRaiseNodeSelectionChanged();
                 }
 
                 var connectionCtrl = _hittestElement as ConnectionContainerControl;
@@ -361,6 +365,8 @@ namespace GraphView.Framework.Controls
                     selectedNode.IsSelected = false;
                 }
                 _selectedNodes.Clear();
+
+                TryRaiseNodeSelectionChanged();
             }
 
             _hittestElement = null;
@@ -483,6 +489,15 @@ namespace GraphView.Framework.Controls
             diagram.ChildNodes.CollectionChanged += canvas.ChildNodes_CollectionChanged;
             diagram.Connections.CollectionChanged += canvas.Connections_CollectionChanged;
             canvas.AddExistingNodes();
+        }
+
+        private void TryRaiseNodeSelectionChanged()
+        {
+            if (!(this.Diagram is Diagram diagram))
+            {
+                return;
+            }
+            diagram.RaisNodeSelectionChanged();
         }
 
         #endregion

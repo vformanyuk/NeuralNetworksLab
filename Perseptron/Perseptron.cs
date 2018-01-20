@@ -1,5 +1,4 @@
 ﻿using NeuralNetworkLab.Infrastructure;
-using NeuralNetworkLab.Infrastructure.Common;
 using NeuralNetworkLab.Infrastructure.Common.Settings;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 

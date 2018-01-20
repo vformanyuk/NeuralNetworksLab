@@ -69,6 +69,7 @@
     <Compile Include="Common\Properties\BooleanProperty.cs" />
     <Compile Include="Common\Properties\CharProperty.cs" />
     <Compile Include="Common\Properties\FileSelectProperty.cs" />
+    <Compile Include="Common\Properties\UintProperty.cs" />
     <Compile Include="Common\Settings\ActivationFunctionSettingsItem.cs" />
     <Compile Include="Common\Properties\DoubleProperty.cs" />
     <Compile Include="Common\Functors\ReLu.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Interfaces\ISupportLearning.cs" />
     <Compile Include="Common\Properties\NeuralNetworkProperty.cs" />
     <Compile Include="Layer.cs" />
+    <Compile Include="LayerProperties.cs" />
     <Compile Include="NeuralNetworkLabPlugin.cs" />
     <Compile Include="NeuroFiber.cs" />
     <Compile Include="NeuronBase.cs" />

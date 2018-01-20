@@ -9,15 +9,45 @@ namespace NeuralNetworkLab.Infrastructure
 {
     public class Layer : INode, INotifyPropertyChanged, IDisposable
     {
-        protected Layer() :
+        public Layer() :
             this(null)
         {
         }
 
-        protected Layer(IEnumerable<NeuronBase> neurons)
+        public Layer(IEnumerable<NeuronBase> neurons)
         {
             _neurons = neurons?.ToList() ?? new List<NeuronBase>();
+            _compactFibersView = true;
+            _neuronsCount = (uint)_neurons.Count;
         }
+
+        private bool _compactFibersView;
+        public bool UseCompactFibersView
+        {
+            get => _compactFibersView;
+            set
+            {
+                if (_compactFibersView == value) return;
+
+                _compactFibersView = value;
+                OnPropertyChanged(nameof(UseCompactFibersView));
+            }
+        }
+
+        private uint _neuronsCount;
+        public uint NeuronsCount
+        {
+            get => _neuronsCount;
+            set
+            {
+                if (_neuronsCount == value) return;
+
+                _neuronsCount = value;
+                OnPropertyChanged(nameof(NeuronsCount));
+            }
+        }
+
+
 
         #region Private Methods
 

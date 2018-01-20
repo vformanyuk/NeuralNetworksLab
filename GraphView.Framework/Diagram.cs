@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using NeuralNetworkLab.Interfaces;
 
 namespace GraphView.Framework
@@ -15,5 +16,11 @@ namespace GraphView.Framework
         public ObservableCollection<INode> ChildNodes { get; private set; }
         public IConnectionsFactory ConnectionsFactory { get; private set; }
         public ObservableCollection<IConnection> Connections { get; private set; }
+        public event EventHandler NodeSelectionChanged;
+
+        internal void RaisNodeSelectionChanged()
+        {
+            NodeSelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
