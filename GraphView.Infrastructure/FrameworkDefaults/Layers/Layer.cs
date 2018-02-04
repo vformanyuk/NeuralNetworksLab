@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using NeuralNetworkLab.Infrastructure.Events;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 using NeuralNetworkLab.Interfaces;
 
@@ -15,33 +16,19 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         private string _name;
         private double _x, _y;
         private bool _isSelected;
-        protected List<NeuronBase> _neurons;
 
         private readonly INeuronFactory _neuronFactory;
 
-        protected List<IConnectionPoint> _inputs = new List<IConnectionPoint>();
-        protected List<IConnectionPoint> _outputs = new List<IConnectionPoint>();
-
+        private List<IConnectionPoint> _inputs = new List<IConnectionPoint>();
+        private List<IConnectionPoint> _outputs = new List<IConnectionPoint>();
         #endregion
 
 
-        public Layer(INeuronFactory factory) :
-            this(factory, null)
-        {
-        }
-
-        public Layer(INeuronFactory factory, IEnumerable<NeuronBase> neurons)
+        public Layer(INeuronFactory factory)
         {
             _neuronFactory = factory;
-            _neurons = neurons?.ToList() ?? new List<NeuronBase>();
             _compactInputsView = true;
             _compactOutputsView = true;
-            _neuronsCount = (uint)_neurons.Count;
-            for (var i = 0; i < _neuronsCount; i++)
-            {
-                _inputs.Add(new Connector(this));
-                _outputs.Add(new Connector(this));
-            }
         }
 
         private bool _compactInputsView;
@@ -53,6 +40,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 if (_compactInputsView == value) return;
 
                 _compactInputsView = value;
+                this.UpdateConnectorsView(true);
                 OnPropertyChanged(nameof(UseCompactInputs));
             }
         }
@@ -66,6 +54,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 if (_compactOutputsView == value) return;
 
                 _compactOutputsView = value;
+                this.UpdateConnectorsView(false);
                 OnPropertyChanged(nameof(UseCompactOutputs));
             }
         }
@@ -78,12 +67,12 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
             {
                 if (_neuronsCount == value) return;
 
-                var oldValue = (long)_neuronsCount;
+                var oldValue = _neuronsCount;
                 _neuronsCount = value;
 
                 OnPropertyChanged(nameof(NeuronsCount));
 
-                this.UpdateNeuronsCount(_neuronsCount - oldValue);
+                this.UpdateNeuronsCount((int)(_neuronsCount - oldValue));
             }
         }
 
@@ -97,52 +86,82 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 
                 _neuronType = value;
                 OnPropertyChanged(nameof(NeuronType));
-
-                this.UpdateNeuronsType();
             }
         }
 
-        public IEnumerable<IConnectionPoint> Inputs => _inputs;
-        public IEnumerable<IConnectionPoint> Outputs => _outputs;
-
-        public IEnumerable<NeuronBase> Neurons => _neurons;
-
         #region Private Methods
 
-        private void UpdateNeuronsCount(long delta)
+        private void UpdateNeuronsCount(int delta)
         {
             if(!_neuronFactory.Constructors.ContainsKey(_neuronType)) return;
 
             if (Math.Sign(delta) < 0) // neurons count decreased
             {
-                foreach (var neuronBase in _neurons.Skip((int)_neuronsCount))
+                var toRemove = new List<IConnectionPoint>();
+                if (!this.UseCompactInputs)
                 {
-                    neuronBase.Dispose();
-                    // remove inputs, outputs and fibers
+                    toRemove.AddRange(_inputs.Skip((int)this.NeuronsCount).ToList());
                 }
 
-                _neurons.RemoveRange((int)_neuronsCount, (int)Math.Abs(delta));
+                if (!this.UseCompactOutputs)
+                {
+                    toRemove.AddRange(_outputs.Skip((int)this.NeuronsCount).ToList());
+                }
+
+                EventAggregator.Publish(new ConnectorsRemovedEventArgs(toRemove));
             }
             else // neurons count increased
             {
-                for (int i = 0; i < delta; i++)
+                for (var i = 0; i < delta; i++)
                 {
-                    _neurons.Add(_neuronFactory.Constructors[_neuronType].Invoke());
-                    // add inputs and outputs
+                    if (!this.UseCompactOutputs)
+                    {
+                        _outputs.Add(new Connector(this));
+                    }
+
+                    if (!this.UseCompactInputs)
+                    {
+                        _inputs.Add(new Connector(this));
+                    }
                 }
             }
         }
 
-        private void UpdateNeuronsType()
+        private void UpdateConnectorsView(bool forInputs)
         {
-            if (!_neuronFactory.Constructors.ContainsKey(_neuronType)) return;
-
-            for (int i = 0; i < _neuronsCount; i++)
+            if (forInputs)
             {
-                //var oldNeuron = _neurons[i];
-                _neurons.RemoveAt(i);
-                _neurons.Insert(i, _neuronFactory.Constructors[_neuronType].Invoke());
-                // update connection if any
+                if (UseCompactInputs)
+                {
+                    var toRemove = _inputs.Skip(1).ToList();
+                    EventAggregator.Publish(new ConnectorsRemovedEventArgs(toRemove));
+                    _inputs.RemoveRange(1, toRemove.Count);
+                    toRemove.Clear();
+                }
+                else
+                {
+                    for (int i = 1; i < NeuronsCount; i++)
+                    {
+                        _inputs.Add(new Connector(this));
+                    }
+                }
+            }
+            else
+            {
+                if (UseCompactOutputs)
+                {
+                    var toRemove = _outputs.Skip(1).ToList();
+                    EventAggregator.Publish(new ConnectorsRemovedEventArgs(toRemove));
+                    _outputs.RemoveRange(1, toRemove.Count);
+                    toRemove.Clear();
+                }
+                else
+                {
+                    for (int i = 1; i < NeuronsCount; i++)
+                    {
+                        _outputs.Add(new Connector(this));
+                    }
+                }
             }
         }
 
@@ -197,11 +216,6 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 
         public virtual void Dispose()
         {
-            foreach (var neuronBase in _neurons)
-            {
-                neuronBase.Dispose();
-            }
-            _neurons.Clear();
         }
 
         public virtual bool IsSelected

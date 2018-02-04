@@ -77,6 +77,10 @@
     <Compile Include="Common\Functors\Sigmoid.cs" />
     <Compile Include="Common\Functors\SigmoidDerivative.cs" />
     <Compile Include="Common\Settings\SettingsItem.cs" />
+    <Compile Include="Events\ConnectorsRemovedEventArgs.cs" />
+    <Compile Include="Events\EventAggregator.cs" />
+    <Compile Include="Events\EventAggregatorEventArgs.cs" />
+    <Compile Include="Events\EventAggregatorSubscribtionToken.cs" />
     <Compile Include="FrameworkDefaults\NeuroFiberConnection.cs" />
     <Compile Include="FrameworkDefaults\Connector.cs" />
     <Compile Include="FrameworkDefaults\NeuronNode.cs" />

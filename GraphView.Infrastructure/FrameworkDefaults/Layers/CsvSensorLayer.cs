@@ -8,9 +8,9 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
     {
         // subscribe to EVentAggregator 'emulate' and read csv file emitting got values
 
-        public CsvSensorLayer(INeuronFactory factory) : base(factory, null)
+        public CsvSensorLayer(INeuronFactory factory) : base(factory)
         {
-
+            this.NeuronType = typeof(Sensor);
         }
 
         private char? _delimiter;
@@ -72,12 +72,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 if (!string.IsNullOrEmpty(line) && line.IndexOf(_delimiter.Value) > 0)
                 {
                     var sensorsCount = line.Split(new [] {_delimiter.Value}, StringSplitOptions.RemoveEmptyEntries).Length;
-
-                    _neurons.Clear();
-                    for (int i = 0; i < sensorsCount - 1; i++)
-                    {
-                        _neurons.Add(new Sensor());
-                    }
+                    this.NeuronsCount = (uint)sensorsCount;
                 }
             }
         }
