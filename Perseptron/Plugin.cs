@@ -24,13 +24,11 @@ namespace Perseptron
             return new Perseptron(this._settings);
         }
 
-        public override NeuronNode CreateNeuronNode(NeuronBase neuron)
+        public override Type NeuronType => typeof(Perseptron);
+
+        public override NeuronNode CreateNeuronNode()
         {
-            if(neuron is Perseptron perseptron)
-            {
-                return new PerseptronNode(perseptron);
-            }
-            throw new ArgumentException(nameof(neuron) + " is not of type " + typeof(Perseptron).Name);
+            return new PerseptronNode();
         }
     }
 }

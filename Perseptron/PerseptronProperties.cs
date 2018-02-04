@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NeuralNetworkLab.Infrastructure;
 using NeuralNetworkLab.Infrastructure.Common;
 using NeuralNetworkLab.Infrastructure.Common.Properties;
+using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace Perseptron

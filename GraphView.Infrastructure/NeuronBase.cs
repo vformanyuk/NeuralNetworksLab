@@ -5,7 +5,7 @@ using GraphView.Infrastructure.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure
 {
-    public class NeuronBase : ISubject<double>, ISupportLearning
+    public class NeuronBase : ISubject<double>, ISupportLearning, IDisposable
     {
         // goes from source neuron to target one
         protected readonly List<IObserver<double>> _axons = new List<IObserver<double>>();
@@ -53,6 +53,12 @@ namespace NeuralNetworkLab.Infrastructure
 
         public virtual void OnCompleted()
         {
+        }
+
+        public virtual void Dispose()
+        {
+            _axons.Clear();
+            _learningDendrits.Clear();
         }
     }
 }

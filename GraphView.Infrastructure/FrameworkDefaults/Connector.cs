@@ -10,11 +10,11 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
     {
         #region Constructors
 
-        public Connector(NeuronNode host) : this(host, null)
+        public Connector(INode host) : this(host, null)
         {
         }
 
-        public Connector(NeuronNode host, Func<Connector, bool> canConnect)
+        public Connector(INode host, Func<Connector, bool> canConnect)
         {
             _canConnect = canConnect;
             _host = host;
@@ -86,7 +86,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 
         private bool _isConnected;
         private readonly Func<Connector, bool> _canConnect;
-        private readonly NeuronNode _host;
+        private readonly INode _host;
 
         #endregion
 

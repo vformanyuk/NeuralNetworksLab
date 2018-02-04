@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 
 namespace NeuralNetworkLab.Infrastructure.Interfaces
 {

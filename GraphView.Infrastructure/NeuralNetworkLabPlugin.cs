@@ -1,4 +1,5 @@
-﻿using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
+﻿using System;
+using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure
@@ -11,7 +12,9 @@ namespace NeuralNetworkLab.Infrastructure
             _settings = settings;
         }
 
-        public abstract NeuronNode CreateNeuronNode(NeuronBase neuron);
+        public abstract Type NeuronType { get; }
+
+        public abstract NeuronNode CreateNeuronNode();
         public abstract NeuronBase CreateNeuronModel();
 
         public abstract IPropertiesProvider Properties { get; }

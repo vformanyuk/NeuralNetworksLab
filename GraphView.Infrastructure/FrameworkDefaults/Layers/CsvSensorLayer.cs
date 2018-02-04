@@ -1,11 +1,17 @@
 ﻿using System;
 using System.IO;
+using NeuralNetworkLab.Infrastructure.Interfaces;
 
-namespace NeuralNetworkLab.Infrastructure.SensorLayers
+namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 {
     public class CsvSensorLayer : Layer
     {
         // subscribe to EVentAggregator 'emulate' and read csv file emitting got values
+
+        public CsvSensorLayer(INeuronFactory factory) : base(factory, null)
+        {
+
+        }
 
         private char? _delimiter;
         public char? Delimiter
@@ -68,7 +74,7 @@ namespace NeuralNetworkLab.Infrastructure.SensorLayers
                     var sensorsCount = line.Split(new [] {_delimiter.Value}, StringSplitOptions.RemoveEmptyEntries).Length;
 
                     _neurons.Clear();
-                    for (int i = 0; i < sensorsCount; i++)
+                    for (int i = 0; i < sensorsCount - 1; i++)
                     {
                         _neurons.Add(new Sensor());
                     }

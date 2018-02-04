@@ -13,6 +13,7 @@ using System.Xml;
 using Autofac;
 using NeuralNetworkLab.Infrastructure;
 using NeuralNetworkLab.Infrastructure.Interfaces;
+using NeuralNetworksLab.App.Services;
 using NeuralNetworksLab.App.ViewModels;
 
 namespace NeuralNetworksLab.App
@@ -32,14 +33,17 @@ namespace NeuralNetworksLab.App
             {
                 assembly = Assembly.LoadFile(dll.FullName);
 
-                var assemblyResources = new ResourceDictionary();
-                assemblyResources.Source = new Uri($"pack://application:,,,/{assembly.GetName().Name};component/generic.xaml");
+                var assemblyResources = new ResourceDictionary
+                {
+                    Source = new Uri($"pack://application:,,,/{assembly.GetName().Name};component/generic.xaml")
+                };
                 this.Resources.MergedDictionaries.Add(assemblyResources);
 
                 builder.RegisterAssemblyModules(assembly);
             }
 
             builder.RegisterInstance(new Services.SettingsProvider()).As<ISettingsProvider>().ExternallyOwned();
+            builder.RegisterType<NeuronFactory>().As<INeuronFactory>().SingleInstance();
             builder.RegisterType<MainViewModel>().SingleInstance();
 
             var contrianer = builder.Build();

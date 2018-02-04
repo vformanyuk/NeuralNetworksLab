@@ -87,6 +87,7 @@
     <Compile Include="Interfaces\IFunctor.cs" />
     <Compile Include="Interfaces\IMovable.cs" />
     <Compile Include="Interfaces\IGenericProperty.cs" />
+    <Compile Include="Interfaces\INeuronFactory.cs" />
     <Compile Include="Interfaces\INode.cs" />
     <Compile Include="Interfaces\IPropertiesProvider.cs" />
     <Compile Include="Interfaces\IRouter.cs" />
@@ -95,16 +96,16 @@
     <Compile Include="Interfaces\ISettingsProvider.cs" />
     <Compile Include="Interfaces\ISupportLearning.cs" />
     <Compile Include="Common\Properties\NeuralNetworkProperty.cs" />
-    <Compile Include="Layer.cs" />
-    <Compile Include="LayerProperties.cs" />
+    <Compile Include="FrameworkDefaults\Layers\Layer.cs" />
+    <Compile Include="Common\Properties\LayerProperties.cs" />
     <Compile Include="NeuralNetworkLabPlugin.cs" />
     <Compile Include="NeuroFiber.cs" />
     <Compile Include="NeuronBase.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sensor.cs" />
-    <Compile Include="SensorLayers\CsvSensorLayer.cs" />
-    <Compile Include="SensorLayers\CsvSensorLayerProperties.cs" />
+    <Compile Include="FrameworkDefaults\Layers\CsvSensorLayer.cs" />
+    <Compile Include="Common\Properties\CsvSensorLayerProperties.cs" />
     <Compile Include="SubscribtionToken.cs" />
   </ItemGroup>
   <ItemGroup>

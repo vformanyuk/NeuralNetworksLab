@@ -5,15 +5,13 @@ namespace Perseptron
 {
     public class PerseptronNode : NeuronNode
     {
-        private IConnectionPoint _inputConnector, _outputConnector;
-
-        public PerseptronNode(Perseptron model) : base(model)
+        public PerseptronNode()
         {
-            _inputConnector = new Connector(this);
-            _outputConnector = new Connector(this);
+            Input = new Connector(this);
+            Output = new Connector(this);
         }
 
-        public IConnectionPoint Input => _inputConnector;
-        public IConnectionPoint Output => _outputConnector;
+        public IConnectionPoint Input { get; }
+        public IConnectionPoint Output { get; }
     }
 }

@@ -7,7 +7,10 @@ namespace Perseptron
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<Plugin>().As<NeuralNetworkLabPlugin>().ExternallyOwned();
+            builder.RegisterType<Plugin>()
+                   .SingleInstance()
+                   .As<NeuralNetworkLabPlugin>()
+                   .ExternallyOwned();
         }
     }
 }

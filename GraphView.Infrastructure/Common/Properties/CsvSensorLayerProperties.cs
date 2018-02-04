@@ -1,6 +1,6 @@
-﻿using NeuralNetworkLab.Infrastructure.Common.Properties;
+﻿using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 
-namespace NeuralNetworkLab.Infrastructure.SensorLayers
+namespace NeuralNetworkLab.Infrastructure.Common.Properties
 {
     public class CsvSensorLayerProperties : LayerProperties
     {

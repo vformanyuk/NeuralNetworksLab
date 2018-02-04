@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using NeuralNetworkLab.Interfaces;
 
@@ -8,17 +7,17 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 {
     public class NeuronNode : INode, INotifyPropertyChanged, IDisposable
     {
-        public NeuronNode(NeuronBase model)
-        {
-            _model = model;
-            _subscribtionToken = model.Distinct()
-                                     .ObserveOnDispatcher()
-                                     .Sample(TimeSpan.FromMilliseconds(500))
-                                     .Subscribe(r =>
-                                     {
-                                         OnPropertyChanged(nameof(this.NeuronPotential));
-                                     });
-        }
+        //public NeuronNode(NeuronBase model)
+        //{
+        //    _model = model;
+        //    _subscribtionToken = model.Distinct()
+        //                             .ObserveOnDispatcher()
+        //                             .Sample(TimeSpan.FromMilliseconds(500))
+        //                             .Subscribe(r =>
+        //                             {
+        //                                 OnPropertyChanged(nameof(this.NeuronPotential));
+        //                             });
+        //}
 
         #region Private Methods
 
@@ -80,13 +79,10 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         private string _name;
         private double _x, _y;
         private bool _isSelected;
-        private NeuronBase _model;
-        private IDisposable _subscribtionToken;
         #endregion
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            _subscribtionToken.Dispose();
         }
 
         public virtual bool IsSelected
@@ -103,9 +99,8 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 
         public double NeuronPotential
         {
-            get { return _model.Output; }
+            get;
+            private set;
         }
-
-        public NeuronBase Model => _model;
     }
 }
