@@ -1,4 +1,5 @@
 ﻿using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
+using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure.Common.Properties
 {
@@ -8,6 +9,10 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
         private const string FileKey = "p_cl_File";
         private const string SkipHeaderKey = "p_cl_SkipHeader";
 
+        public CsvSensorLayerProperties(INeuronFactory factory) : base(factory)
+        {
+        }
+
         public override void AddCustomProperties(Layer layer)
         {
             if (!(layer is CsvSensorLayer csvLayer))
@@ -15,9 +20,9 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
                 return;
             }
 
-            _csvLayerProperties.Add(DelimiterKey, new CharProperty("Delimiter", v => csvLayer.Delimiter = v, csvLayer.Delimiter));
-            _csvLayerProperties.Add(FileKey, new FileSelectProperty("CSV file", v => csvLayer.FileName = v, csvLayer.FileName));
-            _csvLayerProperties.Add(SkipHeaderKey, new BooleanProperty("Skip Header", v => csvLayer.SkipHeaderRow = v, csvLayer.SkipHeaderRow));
+            _layerProperties.Add(new CharProperty(DelimiterKey, v => csvLayer.Delimiter = v, csvLayer.Delimiter));
+            _layerProperties.Add(new FileSelectProperty(FileKey, v => csvLayer.FileName = v, csvLayer.FileName));
+            _layerProperties.Add(new BooleanProperty(SkipHeaderKey, v => csvLayer.SkipHeaderRow = v, csvLayer.SkipHeaderRow));
         }
     }
 }

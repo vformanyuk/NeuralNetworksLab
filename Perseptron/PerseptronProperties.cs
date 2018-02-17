@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NeuralNetworkLab.Infrastructure;
-using NeuralNetworkLab.Infrastructure.Common;
 using NeuralNetworkLab.Infrastructure.Common.Properties;
-using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace Perseptron
@@ -16,17 +11,17 @@ namespace Perseptron
         const string ActivationFunctionKey = "p_p_ActivationFunction";
         const string BiasKey = "p_p_Bias";
 
-        protected readonly ISettingsProvider _settingsProvider;
+        protected readonly ISettingsProvider SettingsProvider;
 
-        private readonly Dictionary<string, IGenericProperty> _perseptronProperties;
+        private readonly HashSet<IGenericProperty> _perseptronProperties;
 
         public PerseptronProperties(ISettingsProvider settings)
         {
-            _settingsProvider = settings;
-            _perseptronProperties = new Dictionary<string, IGenericProperty>();
+            SettingsProvider = settings;
+            _perseptronProperties = new HashSet<IGenericProperty>();
         }
 
-        public IReadOnlyDictionary<string, IGenericProperty> Properties => _perseptronProperties;
+        public IReadOnlyCollection<IGenericProperty> Properties => _perseptronProperties;
 
         public event EventHandler Loaded;
 
@@ -35,37 +30,62 @@ namespace Perseptron
             throw new NotImplementedException();
         }
 
-        public void Load(Perseptron model)
+        public void Load(IPropertiesContrianer model)
         {
-            if(model == null)
+            if (model == null)
             {
                 throw new ArgumentNullException(nameof(model));
             }
 
-            _perseptronProperties.Clear();
-            _perseptronProperties.Add(ActivationFunctionKey, new ActivationFunctionProperty("Activation Function", v =>
+            if (!(model is PerseptronPropertiesContainer container))
             {
-                model.ActivationFunction = v;
-                model.ActivationFunctionDerivative = ActivationFunctionProperty.Derivatives[v];
-            }, model.ActivationFunction));
-            _perseptronProperties.Add(BiasKey, new DoubleProperty("Bias", v => model.Bias = v, model.Bias));
+                throw new ArgumentException("Incorrect propertis container type");
+            }
+
+            _perseptronProperties.Clear();
+            _perseptronProperties.Add(new ActivationFunctionProperty(ActivationFunctionKey, v =>
+            {
+                container.ActivationFunction = v;
+                container.ActivationFunctionDerivative = ActivationFunctionProperty.Derivatives[v];
+            }, container.ActivationFunction));
+            _perseptronProperties.Add(new DoubleProperty(BiasKey, v => container.Bias = v, container.Bias));
 
             Loaded?.Invoke(this, EventArgs.Empty);
         }
 
-        public void Load(NeuronBase model)
+        public void Load(IEnumerable<IPropertiesContrianer> contrainers)
         {
-            this.Load(model as Perseptron);
-        }
+            if (contrainers == null)
+            {
+                throw new ArgumentNullException(nameof(contrainers));
+            }
 
-        public void Load(Layer layer)
-        {
-            throw new NotImplementedException();
-        }
+            var perseptronProps = contrainers.OfType<PerseptronPropertiesContainer>().ToList();
 
-        public void Load(IEnumerable<NeuronBase> layer)
-        {
-            throw new NotImplementedException();
+            if (perseptronProps.Count == 0)
+            {
+                return;
+            }
+
+            _perseptronProperties.Clear();
+            _perseptronProperties.Add(new ActivationFunctionProperty(ActivationFunctionKey, v =>
+            {
+                var derivative = ActivationFunctionProperty.Derivatives[v];
+                foreach (var container in perseptronProps)
+                {
+                    container.ActivationFunction = v;
+                    container.ActivationFunctionDerivative = derivative;
+                }
+            }, perseptronProps[0].ActivationFunction));
+            _perseptronProperties.Add(new DoubleProperty(BiasKey, v =>
+            {
+                foreach (var container in perseptronProps)
+                {
+                    container.Bias = v;
+                }
+            }, perseptronProps[0].Bias));
+
+            Loaded?.Invoke(this, EventArgs.Empty);
         }
     }
 }

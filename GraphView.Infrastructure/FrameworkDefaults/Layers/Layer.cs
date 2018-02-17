@@ -9,20 +9,17 @@ using NeuralNetworkLab.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 {
-    public class Layer : INode, INotifyPropertyChanged, IDisposable
+    public class Layer : INode, INotifyPropertyChanged, IDisposable, IPropertiesContrianer
     {
-        #region Private fields
-
         private string _name;
         private double _x, _y;
         private bool _isSelected;
 
         private readonly INeuronFactory _neuronFactory;
 
-        private List<IConnectionPoint> _inputs = new List<IConnectionPoint>();
-        private List<IConnectionPoint> _outputs = new List<IConnectionPoint>();
-        #endregion
-
+        private readonly List<IConnectionPoint> _inputs = new List<IConnectionPoint>();
+        private readonly List<IConnectionPoint> _outputs = new List<IConnectionPoint>();
+        private List<IPropertiesContrianer> _properties = new List<IPropertiesContrianer>();
 
         public Layer(INeuronFactory factory)
         {
@@ -85,11 +82,17 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 if (_neuronType == value) return;
 
                 _neuronType = value;
+                _properties.Clear();
+                if (_neuronFactory.PropertiesContainerConstructors.ContainsKey(_neuronType))
+                {
+                    for (int i = 0; i < this.NeuronsCount; i++)
+                    {
+                        _properties.Add(_neuronFactory.PropertiesContainerConstructors[_neuronType].Invoke());
+                    }
+                }
                 OnPropertyChanged(nameof(NeuronType));
             }
         }
-
-        #region Private Methods
 
         private void UpdateNeuronsCount(int delta)
         {
@@ -170,8 +173,6 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        #endregion
-
         #region INode Members
 
         public string Name
@@ -229,5 +230,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 OnPropertyChanged();
             }
         }
+
+        public IEnumerable<IPropertiesContrianer> NeuronProperties => _properties;
     }
 }

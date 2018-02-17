@@ -60,7 +60,9 @@ namespace NeuralNetworksLab.App.ViewModels
         private void NodeSelectionChanged(object sender, EventArgs e)
         {
             var selectedNodes = _diagram.ChildNodes.Where(n => n.IsSelected).ToList();
-
+            if (selectedNodes.Count == 1)
+            {
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using NeuralNetworkLab.Infrastructure.Interfaces;
 using NeuralNetworkLab.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 {
-    public class NeuronNode : INode, INotifyPropertyChanged, IDisposable
+    public class NeuronNode : INetworkNode, INotifyPropertyChanged, IDisposable
     {
         //public NeuronNode(NeuronBase model)
         //{
@@ -100,7 +101,13 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         public double NeuronPotential
         {
             get;
-            private set;
+            protected set;
+        }
+
+        public IPropertiesContrianer Properties
+        {
+            get;
+            protected set;
         }
     }
 }

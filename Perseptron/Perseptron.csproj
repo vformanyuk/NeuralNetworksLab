@@ -53,10 +53,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BiasSettingsItem.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Perseptron.cs" />
     <Compile Include="PerseptronNode.cs" />
     <Compile Include="PerseptronProperties.cs" />
+    <Compile Include="PerseptronPropertiesContainer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

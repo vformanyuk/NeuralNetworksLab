@@ -1,4 +1,5 @@
-﻿using NeuralNetworkLab.Infrastructure;
+﻿using System;
+using NeuralNetworkLab.Infrastructure;
 using NeuralNetworkLab.Infrastructure.Common.Settings;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
@@ -11,7 +12,7 @@ namespace Perseptron
         private uint _neuroImpulses = 0;
         private uint _backNeuroimpulses = 0;
 
-        public Perseptron(ISettingsProvider settings)
+        public Perseptron(ISettingsProvider settings, PerseptronPropertiesContainer properties)
         {
             var settingsActivationFunction = (ActivationFunctionSettingsItem)settings[this.GetType()][Plugin.PerseptronActivationFunctionSettingsKey];
             settingsActivationFunction.Changed += (o, e) =>
@@ -20,24 +21,46 @@ namespace Perseptron
                  this.ActivationFunction = af.Value;
                  this.ActivationFunctionDerivative = af.Derivative;
              };
+            var bias = (BiasSettingsItem) settings[this.GetType()][Plugin.PerseptronBiasSettingsKey];
+            bias.Changed += (o, e) => this.Bias = (o as BiasSettingsItem).Value;
+
+            if (properties != null && !properties.ActivationFunction.Equals(settingsActivationFunction.Value))
+            {
+                this.ActivationFunction = properties.ActivationFunction;
+                this.ActivationFunctionDerivative = properties.ActivationFunctionDerivative;
+            }
+            else
+            {
+                this.ActivationFunction = settingsActivationFunction.Value;
+                this.ActivationFunctionDerivative = settingsActivationFunction.Derivative;
+            }
+
+            if (properties != null && Math.Abs(bias.Value - properties.Bias) > 0.0001)
+            {
+                this.Bias = properties.Bias;
+            }
+            else
+            {
+                this.Bias = bias.Value;
+            }
         }
 
         public IFunctor ActivationFunction
         {
             get;
-            internal set;
+            private set;
         }
 
         public IFunctor ActivationFunctionDerivative
         {
             get;
-            internal set;
+            private set;
         }
 
         public double Bias
         {
             get;
-            internal set;
+            private set;
         }
 
         public override void Learn(double error)

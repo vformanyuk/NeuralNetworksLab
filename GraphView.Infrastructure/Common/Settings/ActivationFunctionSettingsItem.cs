@@ -24,13 +24,19 @@ namespace NeuralNetworkLab.Infrastructure.Common.Settings
         }
 
         public ActivationFunctionSettingsItem(string name, IFunctor defaultValue = null)
-            : base(name, defaultValue)
+            : base(name)
         {
             this.ValuesCollection = new Dictionary<string, IFunctor>()
             {
                 {"Sigmoid", _sigmoid },
                 {"ReLu", _relu }
             };
+
+            if (defaultValue != null)
+            {
+                _activationFunction = defaultValue;
+                this.Derivative = _derivatives[_activationFunction];
+            }
         }
 
         public IFunctor Derivative
@@ -45,7 +51,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Settings
             get => _activationFunction;
             protected set
             {
-                if (_activationFunction == value) return;
+                if (_activationFunction.Equals(value)) return;
                 _activationFunction = value;
                 this.Derivative = _derivatives[value];
                 this.RaiseChanged();

@@ -72,7 +72,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 if (!string.IsNullOrEmpty(line) && line.IndexOf(_delimiter.Value) > 0)
                 {
                     var sensorsCount = line.Split(new [] {_delimiter.Value}, StringSplitOptions.RemoveEmptyEntries).Length;
-                    this.NeuronsCount = (uint)sensorsCount;
+                    this.NeuronsCount = (uint) sensorsCount - 1;
                 }
             }
         }

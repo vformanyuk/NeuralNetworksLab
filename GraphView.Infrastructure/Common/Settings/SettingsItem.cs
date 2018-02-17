@@ -7,15 +7,23 @@ namespace NeuralNetworkLab.Infrastructure.Common.Settings
 {
     public abstract class SettingsItem<T> : ISettingsItem
     {
-        protected SettingsItem(string name, T defaultValue)
+        protected SettingsItem(string name)
         {
             this.Name = name;
-            this.Value = defaultValue;
         }
 
         public IReadOnlyDictionary<string, T> ValuesCollection { get; protected set; }
 
-        public virtual T Value { get; protected set; }
+        protected T _value;
+        public virtual T Value
+        {
+            get => _value;
+            protected set
+            {
+                _value = value;
+                RaiseChanged();
+            }
+        }
 
         public UIElement CustomEditor { get; protected set; }
 

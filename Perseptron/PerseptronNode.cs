@@ -1,14 +1,16 @@
 ﻿using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
+using NeuralNetworkLab.Infrastructure.Interfaces;
 using NeuralNetworkLab.Interfaces;
 
 namespace Perseptron
 {
     public class PerseptronNode : NeuronNode
     {
-        public PerseptronNode()
+        public PerseptronNode(ISettingsProvider settings)
         {
             Input = new Connector(this);
             Output = new Connector(this);
+            this.Properties = new PerseptronPropertiesContainer(settings);
         }
 
         public IConnectionPoint Input { get; }

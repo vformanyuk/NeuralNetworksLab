@@ -10,25 +10,32 @@ namespace Perseptron
     public class Plugin : NeuralNetworkLabPlugin
     {
         public const string PerseptronActivationFunctionSettingsKey = "s_p_activ";
+        public const string PerseptronBiasSettingsKey = "s_p_bias";
 
         public Plugin(ISettingsProvider settings) : base(settings)
         {
             settings.AddProperty(typeof(Perseptron), new ActivationFunctionSettingsItem(PerseptronActivationFunctionSettingsKey, new Sigmoid()));
-            Properties = new PerseptronProperties(settings);
+            settings.AddProperty(typeof(Perseptron), new BiasSettingsItem(PerseptronBiasSettingsKey, 0));
+            PropertiesProvider = new PerseptronProperties(settings);
         }
 
-        public override IPropertiesProvider Properties { get; }
-
-        public override NeuronBase CreateNeuronModel()
+        public override IPropertiesContrianer CreatePropertiesContrianer()
         {
-            return new Perseptron(this._settings);
+            return new PerseptronPropertiesContainer(_settings);
+        }
+
+        public override IPropertiesProvider PropertiesProvider { get; }
+
+        public override NeuronBase CreateNeuronModel(IPropertiesContrianer properties)
+        {
+            return new Perseptron(this._settings, properties as PerseptronPropertiesContainer);
         }
 
         public override Type NeuronType => typeof(Perseptron);
 
         public override NeuronNode CreateNeuronNode()
         {
-            return new PerseptronNode();
+            return new PerseptronNode(this._settings);
         }
     }
 }
