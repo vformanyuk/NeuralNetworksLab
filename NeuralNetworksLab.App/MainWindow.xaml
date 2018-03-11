@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NeuralNetworksLab.App"
-        xmlns:controls="clr-namespace:GraphView.Framework.Controls;assembly=GraphView.Framework"
+        xmlns:grapViewControls="clr-namespace:GraphView.Framework.Controls;assembly=GraphView.Framework"
         xmlns:views="clr-namespace:NeuralNetworksLab.App.Views"
+        xmlns:controls="clr-namespace:NeuralNetworksLab.App.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="680" Width="720">
     <Grid>
@@ -19,8 +20,9 @@
         </Grid.ColumnDefinitions>
 
         <Button Content="Add node" Grid.Column="0" Command="{Binding Path=AddNodeCommand, Mode=OneTime}"/>
-        <controls:DiagramCanvasControl Grid.Row="1" Grid.Column="0" Diagram="{Binding Path=Diagram, Mode=OneWay}"></controls:DiagramCanvasControl>
+        <controls:DoublePropertyPresenter Grid.Column="1" Grid.Row="0" PropertyData="{Binding Path=DoubleProperty}"/>
+        <grapViewControls:DiagramCanvasControl Grid.Row="1" Grid.Column="0" Diagram="{Binding Path=Diagram, Mode=OneWay}"></grapViewControls:DiagramCanvasControl>
 
-        <views:PropertiesView Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" DataContext="{Binding Properties}"></views:PropertiesView>
+        <views:PropertiesView Grid.Column="1" Grid.Row="1" DataContext="{Binding Properties}"></views:PropertiesView>
     </Grid>
 </Window>

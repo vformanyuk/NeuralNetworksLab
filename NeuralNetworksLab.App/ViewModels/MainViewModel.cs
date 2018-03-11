@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using GraphView.Framework;
 using NeuralNetworkLab.Infrastructure;
+using NeuralNetworkLab.Infrastructure.Common.Properties;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 using NeuralNetworkLab.Interfaces;
 using NeuralNetworksLab.App.Annotations;
@@ -20,13 +22,14 @@ namespace NeuralNetworksLab.App.ViewModels
         private readonly ISettingsProvider _settings;
         private readonly INeuronFactory _neuronFactory;
 
-        private IPropertiesProvider _propertiesProvider;
-
         private readonly ConnectionsFactory _neuroFibersConnectionFactory;
         private readonly List<NeuralNetworkLabPlugin> _plugins;
 
         public IDiagram Diagram => _diagram;
 
+        public IGenericProperty DoubleProperty { get; }
+
+        private IPropertiesProvider _propertiesProvider;
         public IPropertiesProvider Properties
         {
             get => _propertiesProvider;
@@ -55,6 +58,8 @@ namespace NeuralNetworksLab.App.ViewModels
             _settings = settings;
 
             _plugins = plugins.ToList();
+
+            DoubleProperty = new DoubleProperty("double", v => Debug.WriteLine(v), 1.25);
         }
 
         private void NodeSelectionChanged(object sender, EventArgs e)
