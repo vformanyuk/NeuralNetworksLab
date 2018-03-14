@@ -5,7 +5,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Functors
 {
     public class ReLuDerivative : IFunctor
     {
-        private static Func<double, double> _reluDx = new Func<double, double>(x => x >= 0 ? 1 : 0);
+        private static readonly Func<double, double> _reluDx = new Func<double, double>(x => x >= 0 ? 1 : 0);
 
         public double Invoke(params double[] arguments)
         {

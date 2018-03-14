@@ -5,7 +5,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Functors
 {
     public class SigmoidDerivative : IFunctor
     {
-        private static Func<double, double> _sigmoidDx;
+        private static readonly Func<double, double> _sigmoidDx;
 
         static SigmoidDerivative()
         {

@@ -58,8 +58,10 @@ GraphView.Infrastructure/obj/Debug/*.*
 GraphView.Infrastructure/obj/Release/*.*
 NeuralNetworksLab.App/obj/*.*
 NeuralNetworksLab.App/obj/Debug/*.*
+NeuralNetworksLab.App/obj/Debug/Controls/*.*
 NeuralNetworksLab.App/obj/Debug/Views/*.*
 NeuralNetworksLab.App/obj/Release/*.*
+NeuralNetworksLab.App/obj/Release/Controls/*.*
 NeuralNetworksLab.App/obj/Release/Views/*.*
 packages/*/*.*
 packages/*/*/*/*.*

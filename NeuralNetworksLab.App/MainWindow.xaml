@@ -20,7 +20,7 @@
         </Grid.ColumnDefinitions>
 
         <Button Content="Add node" Grid.Column="0" Command="{Binding Path=AddNodeCommand, Mode=OneTime}"/>
-        <controls:DoublePropertyPresenter Grid.Column="1" Grid.Row="0" PropertyData="{Binding Path=DoubleProperty}"/>
+        <controls:ActivationFunctionPropertyPresenter Grid.Column="1" Grid.Row="0" PropertyData="{Binding Path=DoubleProperty}"/>
         <grapViewControls:DiagramCanvasControl Grid.Row="1" Grid.Column="0" Diagram="{Binding Path=Diagram, Mode=OneWay}"></grapViewControls:DiagramCanvasControl>
 
         <views:PropertiesView Grid.Column="1" Grid.Row="1" DataContext="{Binding Properties}"></views:PropertiesView>

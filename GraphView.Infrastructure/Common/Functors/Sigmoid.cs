@@ -5,7 +5,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Functors
 {
     public class Sigmoid : IFunctor
     {
-        private static Func<double, double> _sigmoid = new Func<double, double>(x => 1d / (1 + Math.Exp(-x)));
+        private static readonly Func<double, double> _sigmoid = new Func<double, double>(x => 1d / (1 + Math.Exp(-x)));
 
         public double Invoke(params double[] arguments)
         {

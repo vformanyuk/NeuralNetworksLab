@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using GraphView.Framework;
 using NeuralNetworkLab.Infrastructure;
+using NeuralNetworkLab.Infrastructure.Common.Functors;
 using NeuralNetworkLab.Infrastructure.Common.Properties;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 using NeuralNetworkLab.Interfaces;
@@ -59,7 +60,7 @@ namespace NeuralNetworksLab.App.ViewModels
 
             _plugins = plugins.ToList();
 
-            DoubleProperty = new DoubleProperty("double", v => Debug.WriteLine(v), 1.25);
+            DoubleProperty = new ActivationFunctionProperty("activation F", v => Debug.WriteLine(v), new ReLu());
         }
 
         private void NodeSelectionChanged(object sender, EventArgs e)

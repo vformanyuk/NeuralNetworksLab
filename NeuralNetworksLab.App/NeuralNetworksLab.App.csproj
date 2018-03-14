@@ -72,9 +72,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\DelegateCommand.cs" />
+    <Compile Include="Controls\ActivationFunctionPropertyPresenter.xaml.cs">
+      <DependentUpon>ActivationFunctionPropertyPresenter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DoublePropertyPresenter.xaml.cs">
       <DependentUpon>DoublePropertyPresenter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PropertyPresenterBase.cs" />
     <Compile Include="Controls\PropertyPresenterViewModel.cs" />
     <Compile Include="Events\ConnectionEventArgs.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
@@ -91,6 +95,10 @@
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\ActivationFunctionPropertyPresenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DoublePropertyPresenter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
