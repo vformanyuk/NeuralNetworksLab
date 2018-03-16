@@ -7,8 +7,12 @@
         xmlns:grapViewControls="clr-namespace:GraphView.Framework.Controls;assembly=GraphView.Framework"
         xmlns:views="clr-namespace:NeuralNetworksLab.App.Views"
         xmlns:controls="clr-namespace:NeuralNetworksLab.App.Controls"
+        xmlns:converters="clr-namespace:NeuralNetworksLab.App.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="680" Width="720">
+    <Window.Resources>
+        <converters:DoubleConverter x:Key="doubleConverter"></converters:DoubleConverter>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>

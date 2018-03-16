@@ -5,43 +5,33 @@ using NeuralNetworkLab.Infrastructure.Common.Properties;
 
 namespace NeuralNetworksLab.App.Controls
 {
-    public class PropertyPresenterViewModel<T,V> : DependencyObject
+    public class PropertyPresenterViewModel<T> : DependencyObject
     {
         public static readonly DependencyProperty PresentingValueProperty = DependencyProperty.Register(
-            "PresentingValue", typeof(V), typeof(PropertyPresenterViewModel<T,V>), new PropertyMetadata(default(V), OnPresentingValueChanged));
+            "PresentingValue", typeof(T), typeof(PropertyPresenterViewModel<T>), new PropertyMetadata(default(T), OnPresentingValueChanged));
 
         private static void OnPresentingValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue == null) return;
+            if (e.OldValue == null || e.NewValue == DependencyProperty.UnsetValue) return;
 
-            var vm = (PropertyPresenterViewModel<T,V>) d;
-            if (vm._converter != null)
-            {
-                var converted = vm._converter.Invoke(e.NewValue);
-                if (converted.Item1)
-                {
-                    vm._dataEmitter?.OnNext(converted.Item2);
-                }
-            }
+            var vm = (PropertyPresenterViewModel<T>) d;
+            vm._dataEmitter?.OnNext((T) e.NewValue);
         }
 
-        public V PresentingValue
+        public T PresentingValue
         {
-            get => (V) GetValue(PresentingValueProperty);
+            get => (T) GetValue(PresentingValueProperty);
             set => SetValue(PresentingValueProperty, value);
         }
 
         public IEnumerable<T> ValuesSet { get; }
 
         private readonly IObserver<T> _dataEmitter;
-        private readonly Func<object, (bool,T)> _converter;
-        public PropertyPresenterViewModel(NeuralNetworkProperty<T> model, V presentingValue, IObserver<T> dataEmitter, Func<object,(bool,T)> converter)
+        public PropertyPresenterViewModel(NeuralNetworkProperty<T> model, IObserver<T> dataEmitter)
         {
             this.ValuesSet = model.ValuesCollection.Values;
-            this.PresentingValue = presentingValue;
 
             _dataEmitter = dataEmitter;
-            _converter = converter;
         }
     }
 }

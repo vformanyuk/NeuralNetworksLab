@@ -7,17 +7,17 @@ using NeuralNetworkLab.Infrastructure.Common.Properties;
 
 namespace NeuralNetworksLab.App.Controls
 {
-    public class PropertyPresenterBase<T,U> : UserControl
+    public class PropertyPresenterBase<T> : UserControl
     {
         public static readonly DependencyProperty PropertyDataProperty = DependencyProperty.Register(
-            "PropertyData", typeof(NeuralNetworkProperty<T>), typeof(PropertyPresenterBase<T, U>), new PropertyMetadata(null, OnPropertyDataChanged));
+            "PropertyData", typeof(NeuralNetworkProperty<T>), typeof(PropertyPresenterBase<T>), new PropertyMetadata(null, OnPropertyDataChanged));
 
         private static void OnPropertyDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (!(e.NewValue is NeuralNetworkProperty<T> model)) return;
 
-            var presenter = (PropertyPresenterBase<T, U>)d;
-            presenter.DataContext = new PropertyPresenterViewModel<T, U>(model, presenter._presentingConverter.Invoke(model.Value), presenter._valueSetter, presenter._converter);
+            var presenter = (PropertyPresenterBase<T>)d;
+            presenter.DataContext = new PropertyPresenterViewModel<T>(model, presenter._valueSetter);
 
             if (presenter._subscribtionToken != null)
             {
@@ -36,7 +36,7 @@ namespace NeuralNetworksLab.App.Controls
 
                     var valueToSet = o;
                     presenter._intervalSubscription = Observable.Timer(TimeSpan.FromMilliseconds(100))
-                        .Subscribe(_ => model.PropertySetter.Invoke(valueToSet));
+                                                                .Subscribe(_ => model.PropertySetter.Invoke(valueToSet));
                 });
         }
 
@@ -49,14 +49,10 @@ namespace NeuralNetworksLab.App.Controls
         private IDisposable _subscribtionToken;
         private IDisposable _intervalSubscription;
         private readonly Subject<T> _valueSetter;
-        private readonly Func<object, (bool, T)> _converter;
-        private readonly Func<T, U> _presentingConverter;
 
-        public PropertyPresenterBase(Func<object, (bool, T)> valueConverter, Func<T,U> presentingValueConverter)
+        public PropertyPresenterBase()
         {
             _valueSetter = new Subject<T>();
-            _converter = valueConverter;
-            _presentingConverter = presentingValueConverter;
         }
     }
 }

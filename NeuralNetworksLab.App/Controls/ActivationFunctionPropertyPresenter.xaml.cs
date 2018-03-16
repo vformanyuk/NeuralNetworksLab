@@ -5,10 +5,9 @@ namespace NeuralNetworksLab.App.Controls
     /// <summary>
     /// Interaction logic for ActivationFunctionPropertyPresenter.xaml
     /// </summary>
-    public partial class ActivationFunctionPropertyPresenter : PropertyPresenterBase<IFunctor, IFunctor>
+    public partial class ActivationFunctionPropertyPresenter : PropertyPresenterBase<IFunctor>
     {
-        public ActivationFunctionPropertyPresenter() : base(o => (true, (IFunctor) o),
-                                                            v => v)
+        public ActivationFunctionPropertyPresenter()
         {
             InitializeComponent();
         }
