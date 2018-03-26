@@ -72,6 +72,7 @@
     <Compile Include="Common\Properties\BooleanProperty.cs" />
     <Compile Include="Common\Properties\CharProperty.cs" />
     <Compile Include="Common\Properties\FileSelectProperty.cs" />
+    <Compile Include="Common\Properties\StringProperty.cs" />
     <Compile Include="Common\Properties\UintProperty.cs" />
     <Compile Include="Common\Settings\ActivationFunctionSettingsItem.cs" />
     <Compile Include="Common\Properties\DoubleProperty.cs" />

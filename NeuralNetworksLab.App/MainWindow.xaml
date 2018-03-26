@@ -20,7 +20,7 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Button Content="Add node" Grid.Column="0" Command="{Binding Path=AddNodeCommand, Mode=OneTime}"/>
+        <views:ToolboxView DataContext="{Binding Path=Toolbox}"></views:ToolboxView>
         <grapViewControls:DiagramCanvasControl Grid.Row="1" Grid.Column="0" Diagram="{Binding Path=Diagram, Mode=OneWay}"></grapViewControls:DiagramCanvasControl>
 
         <views:PropertiesView Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" DataContext="{Binding Properties}"></views:PropertiesView>

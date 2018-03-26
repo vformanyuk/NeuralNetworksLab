@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
+
 using GraphView.Framework;
+
 using NeuralNetworkLab.Infrastructure;
-using NeuralNetworkLab.Infrastructure.Common.Functors;
-using NeuralNetworkLab.Infrastructure.Common.Properties;
+using NeuralNetworkLab.Infrastructure.Events;
 using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 using NeuralNetworkLab.Interfaces;
 using NeuralNetworksLab.App.Annotations;
-using NeuralNetworksLab.App.Commands;
+using NeuralNetworksLab.App.Events;
 using NeuralNetworksLab.App.Extensions;
 using NeuralNetworksLab.App.Services;
 
@@ -30,7 +29,7 @@ namespace NeuralNetworksLab.App.ViewModels
 
         public IDiagram Diagram => _diagram;
 
-        public IGenericProperty DoubleProperty { get; }
+        public ToolboxViewModel Toolbox { get; }
 
         private IPropertiesProvider _propertiesProvider;
         public IPropertiesProvider Properties
@@ -45,14 +44,10 @@ namespace NeuralNetworksLab.App.ViewModels
             }
         }
 
-        public ICommand AddNodeCommand => new DelegateCommand(_ =>
-        {
-            var node = _plugins[0].CreateNeuronNode();
-            _diagram.ChildNodes.Add(node);
-        });
-
         public MainViewModel(ISettingsProvider settings, INeuronFactory neuronFactory, IEnumerable<NeuralNetworkLabPlugin> plugins)
         {
+            _plugins = plugins.ToList();
+
             _neuronFactory = neuronFactory;
 
             _neuroFibersConnectionFactory = new ConnectionsFactory(settings);
@@ -60,16 +55,22 @@ namespace NeuralNetworksLab.App.ViewModels
             _diagram = new Diagram(_neuroFibersConnectionFactory);
             _diagram.NodeSelectionChanged += NodeSelectionChanged;
 
+            Toolbox = new ToolboxViewModel(_plugins);
+            EventAggregator.Subscribe<CreateNodeEventArgs>(OnNodeCreateRequested);
+
             _settings = settings;
+        }
 
-            _plugins = plugins.ToList();
+        private void OnNodeCreateRequested(CreateNodeEventArgs createNodeEventArgs)
+        {
+            if(!_neuronFactory.NodeConstructors.TryGetValue(createNodeEventArgs.NodeType, out Func<INode> f)) return;
 
-            DoubleProperty = new ActivationFunctionProperty("activation F", v => Debug.WriteLine(v), new ReLu());
+            _diagram.ChildNodes.Add(f.Invoke());
         }
 
         private void NodeSelectionChanged(object sender, EventArgs e)
         {
-            var selectedNodes = _diagram.ChildNodes.Where(n => n.IsSelected).MostCommon().OfType<NeuronNode>().ToList();
+            var selectedNodes = _diagram.ChildNodes.Where(n => n.IsSelected).MostCommon().ToList();
 
             if (selectedNodes.Count == 0)
             {
@@ -77,8 +78,17 @@ namespace NeuralNetworksLab.App.ViewModels
                 return;
             }
 
-            this.Properties = _neuronFactory.PropertyProviders[selectedNodes[0].NeuronType];
-            this.Properties.Load(selectedNodes.Select(n => n.Properties));
+            var selectedLayer = selectedNodes.OfType<Layer>().FirstOrDefault(); // only one layer may be selected
+            if (selectedLayer != null)
+            {
+                this.Properties = _neuronFactory.PropertyProviders[selectedLayer.GetType()];
+                this.Properties.Load(selectedLayer);
+                return;
+            }
+
+            var selectedNeurons = selectedNodes.OfType<NeuronNode>().ToList();
+            this.Properties = _neuronFactory.PropertyProviders[selectedNeurons[0].NeuronType];
+            this.Properties.Load(selectedNeurons.Select(n => n.Properties));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

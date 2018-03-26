@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+
 using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
@@ -10,9 +12,10 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
 {
     public class LayerProperties : IPropertiesProvider
     {
-        private const string NeuronsCountKey = "p_l_NeuronsCount";
-        private const string CompactInputFibersKey = "p_l_CompactInputFibers";
-        private const string CompactOutputFibersKey = "p_l_CompactOutputFibers";
+        public const string NeuronTypeNameKey = "p_l_NeuronType";
+        public const string NeuronsCountKey = "p_l_NeuronsCount";
+        public const string CompactInputFibersKey = "p_l_CompactInputFibers";
+        public const string CompactOutputFibersKey = "p_l_CompactOutputFibers";
 
         public event EventHandler Loaded;
         public ObservableCollection<IGenericProperty> Properties => _layerProperties;
@@ -37,6 +40,23 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
                 throw new ArgumentException("Not a layer properties requested.");
             }
 
+            _layerProperties.Clear();
+
+            var selectedLayerName = string.Empty;
+            if (layer.NeuronType != null)
+            {
+                selectedLayerName = layer.NeuronType.Name;
+            }
+            var layerNames = _neuronFactory.Constructors.Keys.Select(l => l.Name);
+
+            _layerProperties.Add(new StringProperty(NeuronTypeNameKey, selectedLayerName, n =>
+                {
+                    var neuronType =_neuronFactory.Constructors.Keys.FirstOrDefault(k => k.Name == n);
+                    if (neuronType != null)
+                    {
+                        layer.NeuronType = neuronType;
+                    }
+                }, layerNames));
             _layerProperties.Add(new UintProperty(NeuronsCountKey, v => layer.NeuronsCount = v, layer.NeuronsCount));
             _layerProperties.Add(new BooleanProperty(CompactInputFibersKey, v => layer.UseCompactInputs = v, layer.UseCompactInputs));
             _layerProperties.Add(new BooleanProperty(CompactOutputFibersKey, v => layer.UseCompactOutputs = v, layer.UseCompactOutputs));
@@ -45,7 +65,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
             this.AddCustomProperties(layer, _layerProperties);
 
             _layerProperties.Add(null); // delimiter
-            if (_neuronFactory.PropertyProviders.TryGetValue(layer.NeuronType, out IPropertiesProvider provider))
+            if (layer.NeuronType != null && _neuronFactory.PropertyProviders.TryGetValue(layer.NeuronType, out IPropertiesProvider provider))
             {
                 provider.Load(layer.NeuronProperties);
                 foreach (var providerProperty in provider.Properties)

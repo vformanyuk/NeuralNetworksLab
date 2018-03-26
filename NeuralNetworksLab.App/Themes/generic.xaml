@@ -23,7 +23,7 @@
     </DataTemplate>
     
     <DataTemplate DataType="{x:Type default:CsvSensorLayer}">
-        <Border Background="Transparent" CornerRadius="10" MinHeight="50" 
+        <Border Background="Transparent" CornerRadius="10" MinHeight="100" MinWidth="50" 
                 BorderBrush="Blue" BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -37,7 +37,7 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type default:Layer}">
-        <Border Background="Transparent" CornerRadius="10" MinHeight="50" 
+        <Border Background="Transparent" CornerRadius="10" MinHeight="100" MinWidth="50"
                 BorderBrush="OrangeRed" BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>

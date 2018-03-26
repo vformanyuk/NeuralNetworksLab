@@ -80,6 +80,7 @@
     </Compile>
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Events\ConnectionEventArgs.cs" />
+    <Compile Include="Events\CreateNodeEventArgs.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Routers\LineRouter.cs" />
@@ -88,11 +89,15 @@
     <Compile Include="Services\SettingsProvider.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\ToolboxViewModel.cs" />
     <Compile Include="Views\PropertiesView.xaml.cs">
       <DependentUpon>PropertiesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ToolboxView.xaml.cs">
+      <DependentUpon>ToolboxView.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\ActivationFunctionPropertyPresenter.xaml">
       <SubType>Designer</SubType>
@@ -123,6 +128,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ToolboxView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
