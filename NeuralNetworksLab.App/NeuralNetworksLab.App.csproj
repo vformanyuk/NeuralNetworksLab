@@ -78,8 +78,6 @@
     <Compile Include="Controls\DoublePropertyPresenter.xaml.cs">
       <DependentUpon>DoublePropertyPresenter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PropertyPresenterBase.cs" />
-    <Compile Include="Controls\PropertyPresenterViewModel.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Events\ConnectionEventArgs.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />

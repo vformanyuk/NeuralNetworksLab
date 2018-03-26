@@ -2,23 +2,15 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using NeuralNetworkLab.Infrastructure.Interfaces;
-using NeuralNetworkLab.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 {
     public class NeuronNode : INetworkNode, INotifyPropertyChanged, IDisposable
     {
-        //public NeuronNode(NeuronBase model)
-        //{
-        //    _model = model;
-        //    _subscribtionToken = model.Distinct()
-        //                             .ObserveOnDispatcher()
-        //                             .Sample(TimeSpan.FromMilliseconds(500))
-        //                             .Subscribe(r =>
-        //                             {
-        //                                 OnPropertyChanged(nameof(this.NeuronPotential));
-        //                             });
-        //}
+        protected NeuronNode(Type neuronType)
+        {
+            this.NeuronType = neuronType;
+        }
 
         #region Private Methods
 
@@ -88,7 +80,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 
         public virtual bool IsSelected
         {
-            get { return _isSelected; }
+            get => _isSelected;
             set
             {
                 if (_isSelected == value) return;
@@ -109,5 +101,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
             get;
             protected set;
         }
+
+        public Type NeuronType { get; }
     }
 }

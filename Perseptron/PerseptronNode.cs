@@ -6,7 +6,7 @@ namespace Perseptron
 {
     public class PerseptronNode : NeuronNode
     {
-        public PerseptronNode(ISettingsProvider settings)
+        public PerseptronNode(ISettingsProvider settings) : base(typeof(Perseptron))
         {
             Input = new Connector(this);
             Output = new Connector(this);

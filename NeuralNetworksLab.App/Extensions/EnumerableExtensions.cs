@@ -12,7 +12,7 @@ namespace NeuralNetworksLab.App.Extensions
                 group s by t
                 into g
                 orderby g.Count() descending
-                select g).FirstOrDefault();
+                select g).FirstOrDefault() ?? Enumerable.Empty<T>();
         }
     }
 }

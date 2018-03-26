@@ -13,6 +13,7 @@ namespace NeuralNetworkLab.Infrastructure
         }
 
         public abstract Type NeuronType { get; }
+        public abstract Type NodeType { get; }
 
         public abstract NeuronNode CreateNeuronNode();
         public abstract NeuronBase CreateNeuronModel(IPropertiesContrianer properties);

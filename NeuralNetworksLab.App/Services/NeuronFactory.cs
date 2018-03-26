@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using NeuralNetworkLab.Infrastructure;
+using NeuralNetworkLab.Infrastructure.Common.Properties;
+using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace NeuralNetworksLab.App.Services
@@ -23,6 +25,9 @@ namespace NeuralNetworksLab.App.Services
                 propertiesConstructors.Add(neuralNetworkLabPlugin.NeuronType, neuralNetworkLabPlugin.CreatePropertiesContrianer);
                 propertyProviders.Add(neuralNetworkLabPlugin.NeuronType, neuralNetworkLabPlugin.PropertiesProvider);
             }
+
+            propertyProviders.Add(typeof(Layer), new LayerProperties(this));
+            propertyProviders.Add(typeof(CsvSensorLayer), new CsvSensorLayerProperties(this));
 
             this.Constructors = constructors;
             this.PropertiesContainerConstructors = propertiesConstructors;

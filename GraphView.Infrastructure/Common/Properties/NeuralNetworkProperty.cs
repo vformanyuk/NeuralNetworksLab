@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Windows;
 using NeuralNetworkLab.Infrastructure.Interfaces;
@@ -8,21 +9,25 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
 {
     public abstract class NeuralNetworkProperty<T> : IGenericProperty, INotifyPropertyChanged
     {
-        protected NeuralNetworkProperty(string name, Action<T> propertySetter, UIElement customEditor = null, IReadOnlyDictionary<string, T> defaultValues = null)
+        protected NeuralNetworkProperty(string name, T initialValue, Action<T> propertySetter, UIElement customEditor = null, IEnumerable<T> defaultValues = null)
         {
             PropertyName = name;
             PropertySetter = propertySetter;
             CustomEditor = customEditor;
-            ValuesCollection = defaultValues;
+            if (defaultValues != null)
+            {
+                ValuesCollection = defaultValues.ToImmutableList();
+            }
+
+            _value = initialValue;
         }
 
         public Action<T> PropertySetter
         {
             get;
-            protected set;
         }
 
-        public IReadOnlyDictionary<string, T> ValuesCollection { get; protected set; }
+        public IImmutableList<T> ValuesCollection { get; protected set; }
 
         public string PropertyName { get; }
 
@@ -38,7 +43,17 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
             }
         }
 
-        public T Value { get; protected set; }
+        private T _value;
+        public T Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                this.PropertySetter(value);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
+            }
+        }
 
         object IGenericProperty.Value => this.Value;
 

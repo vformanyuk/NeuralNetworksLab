@@ -9,10 +9,12 @@ using GraphView.Framework;
 using NeuralNetworkLab.Infrastructure;
 using NeuralNetworkLab.Infrastructure.Common.Functors;
 using NeuralNetworkLab.Infrastructure.Common.Properties;
+using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 using NeuralNetworkLab.Interfaces;
 using NeuralNetworksLab.App.Annotations;
 using NeuralNetworksLab.App.Commands;
+using NeuralNetworksLab.App.Extensions;
 using NeuralNetworksLab.App.Services;
 
 namespace NeuralNetworksLab.App.ViewModels
@@ -36,6 +38,8 @@ namespace NeuralNetworksLab.App.ViewModels
             get => _propertiesProvider;
             private set
             {
+                if (_propertiesProvider == value) return;
+
                 _propertiesProvider = value;
                 OnPropertyChanged();
             }
@@ -65,10 +69,16 @@ namespace NeuralNetworksLab.App.ViewModels
 
         private void NodeSelectionChanged(object sender, EventArgs e)
         {
-            var selectedNodes = _diagram.ChildNodes.Where(n => n.IsSelected).ToList();
-            if (selectedNodes.Count == 1)
+            var selectedNodes = _diagram.ChildNodes.Where(n => n.IsSelected).MostCommon().OfType<NeuronNode>().ToList();
+
+            if (selectedNodes.Count == 0)
             {
+                this.Properties = null;
+                return;
             }
+
+            this.Properties = _neuronFactory.PropertyProviders[selectedNodes[0].NeuronType];
+            this.Properties.Load(selectedNodes.Select(n => n.Properties));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -7,11 +7,11 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
 {
     public class ActivationFunctionProperty : NeuralNetworkProperty<IFunctor>
     {
-        private static IFunctor _sigmoid = new Sigmoid();
-        private static IFunctor _sigmoidDx = new SigmoidDerivative();
+        private static readonly IFunctor _sigmoid = new Sigmoid();
+        private static readonly IFunctor _sigmoidDx = new SigmoidDerivative();
 
-        private static IFunctor _relu = new ReLu();
-        private static IFunctor _reluDx = new ReLuDerivative();
+        private static readonly IFunctor _relu = new ReLu();
+        private static readonly IFunctor _reluDx = new ReLuDerivative();
 
         public static readonly Dictionary<IFunctor, IFunctor> Derivatives;
 
@@ -25,18 +25,9 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
         }
 
         public ActivationFunctionProperty(string name, Action<IFunctor> setter, IFunctor functionByDefault = null)
-            : base(name, setter)
+            : base(name, initialValue: functionByDefault, propertySetter: setter,
+                defaultValues: new[] {_sigmoid, _relu})
         {
-            this.ValuesCollection = new Dictionary<string, IFunctor>()
-            {
-                {"Sigmoid", _sigmoid },
-                {"ReLu", _relu }
-            };
-
-            if (functionByDefault != null)
-            {
-                this.Value = functionByDefault;
-            }
         }
 
         public IFunctor Derivative

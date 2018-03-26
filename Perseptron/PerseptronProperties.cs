@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using NeuralNetworkLab.Infrastructure.Common.Properties;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
@@ -13,17 +16,22 @@ namespace Perseptron
 
         protected readonly ISettingsProvider SettingsProvider;
 
-        private readonly HashSet<IGenericProperty> _perseptronProperties;
+        private readonly ObservableCollection<IGenericProperty> _perseptronProperties;
+        public ObservableCollection<IGenericProperty> Properties => _perseptronProperties;
 
         public PerseptronProperties(ISettingsProvider settings)
         {
             SettingsProvider = settings;
-            _perseptronProperties = new HashSet<IGenericProperty>();
+            _perseptronProperties = new ObservableCollection<IGenericProperty>();
         }
 
-        public IReadOnlyCollection<IGenericProperty> Properties => _perseptronProperties;
-
         public event EventHandler Loaded;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public void Commit()
         {
@@ -68,6 +76,7 @@ namespace Perseptron
             }
 
             _perseptronProperties.Clear();
+
             _perseptronProperties.Add(new ActivationFunctionProperty(ActivationFunctionKey, v =>
             {
                 var derivative = ActivationFunctionProperty.Derivatives[v];
@@ -77,6 +86,7 @@ namespace Perseptron
                     container.ActivationFunctionDerivative = derivative;
                 }
             }, perseptronProps[0].ActivationFunction));
+
             _perseptronProperties.Add(new DoubleProperty(BiasKey, v =>
             {
                 foreach (var container in perseptronProps)

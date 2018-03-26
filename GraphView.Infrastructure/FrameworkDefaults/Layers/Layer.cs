@@ -19,7 +19,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 
         private readonly List<IConnectionPoint> _inputs = new List<IConnectionPoint>();
         private readonly List<IConnectionPoint> _outputs = new List<IConnectionPoint>();
-        private List<IPropertiesContrianer> _properties = new List<IPropertiesContrianer>();
+        private readonly List<IPropertiesContrianer> _properties = new List<IPropertiesContrianer>();
 
         public Layer(INeuronFactory factory)
         {

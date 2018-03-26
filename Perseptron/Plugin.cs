@@ -32,6 +32,7 @@ namespace Perseptron
         }
 
         public override Type NeuronType => typeof(Perseptron);
+        public override Type NodeType => typeof(PerseptronNode);
 
         public override NeuronNode CreateNeuronNode()
         {

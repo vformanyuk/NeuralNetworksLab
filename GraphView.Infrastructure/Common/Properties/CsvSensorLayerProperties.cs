@@ -1,4 +1,5 @@
-﻿using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
+﻿using System.Collections.Generic;
+using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure.Common.Properties
@@ -13,16 +14,16 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
         {
         }
 
-        public override void AddCustomProperties(Layer layer)
+        public override void AddCustomProperties(Layer layer, ICollection<IGenericProperty> properties)
         {
             if (!(layer is CsvSensorLayer csvLayer))
             {
                 return;
             }
 
-            _layerProperties.Add(new CharProperty(DelimiterKey, v => csvLayer.Delimiter = v, csvLayer.Delimiter));
-            _layerProperties.Add(new FileSelectProperty(FileKey, v => csvLayer.FileName = v, csvLayer.FileName));
-            _layerProperties.Add(new BooleanProperty(SkipHeaderKey, v => csvLayer.SkipHeaderRow = v, csvLayer.SkipHeaderRow));
+            properties.Add(new CharProperty(DelimiterKey, v => csvLayer.Delimiter = v, csvLayer.Delimiter));
+            properties.Add(new FileSelectProperty(FileKey, v => csvLayer.FileName = v, csvLayer.FileName));
+            properties.Add(new BooleanProperty(SkipHeaderKey, v => csvLayer.SkipHeaderRow = v, csvLayer.SkipHeaderRow));
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:default="clr-namespace:NeuralNetworkLab.Infrastructure.FrameworkDefaults;assembly=NeuralNetworkLab.Infrastructure"
-                    xmlns:controls="clr-namespace:GraphView.Framework.Controls;assembly=GraphView.Framework">
+                    xmlns:controls="clr-namespace:GraphView.Framework.Controls;assembly=GraphView.Framework"
+                    xmlns:properties="clr-namespace:NeuralNetworkLab.Infrastructure.Common.Properties;assembly=NeuralNetworkLab.Infrastructure"
+                    xmlns:localControls="clr-namespace:NeuralNetworksLab.App.Controls">
     
     <DataTemplate DataType="{x:Type default:Connector}">
         <controls:ConnectorControl ConnectionPoint="{Binding}">
@@ -48,5 +50,13 @@
                 <ItemsControl Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></ItemsControl>
             </Grid>
         </Border>
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type properties:DoubleProperty}">
+        <localControls:DoublePropertyPresenter DataContext="{Binding}"></localControls:DoublePropertyPresenter>
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type properties:ActivationFunctionProperty}">
+        <localControls:ActivationFunctionPropertyPresenter DataContext="{Binding}"></localControls:ActivationFunctionPropertyPresenter>
     </DataTemplate>
 </ResourceDictionary>

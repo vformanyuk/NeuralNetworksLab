@@ -10,9 +10,6 @@
         xmlns:converters="clr-namespace:NeuralNetworksLab.App.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="680" Width="720">
-    <Window.Resources>
-        <converters:DoubleConverter x:Key="doubleConverter"></converters:DoubleConverter>
-    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
@@ -24,9 +21,8 @@
         </Grid.ColumnDefinitions>
 
         <Button Content="Add node" Grid.Column="0" Command="{Binding Path=AddNodeCommand, Mode=OneTime}"/>
-        <controls:ActivationFunctionPropertyPresenter Grid.Column="1" Grid.Row="0" PropertyData="{Binding Path=DoubleProperty}"/>
         <grapViewControls:DiagramCanvasControl Grid.Row="1" Grid.Column="0" Diagram="{Binding Path=Diagram, Mode=OneWay}"></grapViewControls:DiagramCanvasControl>
 
-        <views:PropertiesView Grid.Column="1" Grid.Row="1" DataContext="{Binding Properties}"></views:PropertiesView>
+        <views:PropertiesView Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" DataContext="{Binding Properties}"></views:PropertiesView>
     </Grid>
 </Window>
