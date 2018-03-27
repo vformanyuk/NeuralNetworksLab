@@ -59,4 +59,16 @@
     <DataTemplate DataType="{x:Type properties:ActivationFunctionProperty}">
         <localControls:ActivationFunctionPropertyPresenter DataContext="{Binding}"></localControls:ActivationFunctionPropertyPresenter>
     </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type properties:StringProperty}">
+        <localControls:StringPropertyPresenter DataContext="{Binding}"></localControls:StringPropertyPresenter>
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type properties:BooleanProperty}">
+        <localControls:BooleanPropertyPresenter DataContext="{Binding}"></localControls:BooleanPropertyPresenter>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type properties:UintProperty}">
+        <localControls:IntegerPropertyPresenter DataContext="{Binding}" Unsigned="True"></localControls:IntegerPropertyPresenter>
+    </DataTemplate>
 </ResourceDictionary>

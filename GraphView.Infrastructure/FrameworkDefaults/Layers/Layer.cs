@@ -96,6 +96,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 
         private void UpdateNeuronsCount(int delta)
         {
+            if (_neuronType == null) return;
             if(!_neuronFactory.Constructors.ContainsKey(_neuronType)) return;
 
             if (Math.Sign(delta) < 0) // neurons count decreased

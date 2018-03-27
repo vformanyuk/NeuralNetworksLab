@@ -75,10 +75,22 @@
     <Compile Include="Controls\ActivationFunctionPropertyPresenter.xaml.cs">
       <DependentUpon>ActivationFunctionPropertyPresenter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BooleanPropertyPresenter.xaml.cs">
+      <DependentUpon>BooleanPropertyPresenter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DoublePropertyPresenter.xaml.cs">
       <DependentUpon>DoublePropertyPresenter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\IntegerPropertyPresenter.xaml.cs">
+      <DependentUpon>IntegerPropertyPresenter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StringPropertyPresenter.xaml.cs">
+      <DependentUpon>StringPropertyPresenter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\DoubleConverter.cs" />
+    <Compile Include="Converters\IntegerConverter.cs" />
+    <Compile Include="Converters\InversBoolConverter.cs" />
+    <Compile Include="TemplateSelectors\PropertyTemplateSelector.cs" />
     <Compile Include="Events\ConnectionEventArgs.cs" />
     <Compile Include="Events\CreateNodeEventArgs.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
@@ -87,6 +99,7 @@
     <Compile Include="Services\ConnectionsFactory.cs" />
     <Compile Include="Services\NeuronFactory.cs" />
     <Compile Include="Services\SettingsProvider.cs" />
+    <Compile Include="TemplateSelectors\StringPropertyTemplateSelector.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ToolboxViewModel.cs" />
@@ -103,7 +116,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\BooleanPropertyPresenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DoublePropertyPresenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\IntegerPropertyPresenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\StringPropertyPresenter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

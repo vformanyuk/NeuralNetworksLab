@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="NeuralNetworksLab.App.Controls.StringPropertyPresenter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:NeuralNetworksLab.App.Converters"
+             xmlns:properties="clr-namespace:NeuralNetworkLab.Infrastructure.Common.Properties;assembly=NeuralNetworkLab.Infrastructure"
+             xmlns:templateSelectors="clr-namespace:NeuralNetworksLab.App.TemplateSelectors"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:InversBoolConverter x:Key="InversConverter"></converters:InversBoolConverter>
+
+        <DataTemplate DataType="{x:Type properties:StringProperty}" x:Key="InputDataTemplate">
+            <TextBox Text="{Binding Path=Value, Mode=TwoWay}" IsEnabled="{Binding Path=IsReadonly, Mode=OneWay, Converter={StaticResource InversConverter}}"></TextBox>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type properties:StringProperty}" x:Key="ListDataTemplate">
+            <ComboBox ItemsSource="{Binding Path=ValuesCollection}" SelectedItem="{Binding Path=Value, Mode=TwoWay}">
+            </ComboBox>
+        </DataTemplate>
+
+        <templateSelectors:StringPropertyTemplateSelector x:Key="TemplateSelector" 
+                                                          InputTemplate="{StaticResource InputDataTemplate}"
+                                                          ListTemplate="{StaticResource ListDataTemplate}"/>
+    </UserControl.Resources>
+    <StackPanel>
+         <ContentPresenter Content="{Binding}" ContentTemplateSelector="{StaticResource TemplateSelector}"/>  
+    </StackPanel>
+</UserControl>
+

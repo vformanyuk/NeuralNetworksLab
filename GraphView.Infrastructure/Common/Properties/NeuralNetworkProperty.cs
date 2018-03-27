@@ -27,7 +27,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
             get;
         }
 
-        public IImmutableList<T> ValuesCollection { get; protected set; }
+        public IEnumerable<T> ValuesCollection { get; protected set; }
 
         public string PropertyName { get; }
 
