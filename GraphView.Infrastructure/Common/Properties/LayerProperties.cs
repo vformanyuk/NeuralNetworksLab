@@ -28,6 +28,20 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
             _neuronFactory = factory;
         }
 
+        public void UpdateNeuronsProperties(Layer layer)
+        {
+            if (layer.NeuronType != null && _neuronFactory.PropertyProviders.TryGetValue(layer.NeuronType, out IPropertiesProvider provider))
+            {
+                _layerProperties.Add(null); // delimiter
+
+                provider.Load(layer.NeuronProperties);
+                foreach (var providerProperty in provider.Properties)
+                {
+                    _layerProperties.Add(providerProperty);
+                }
+            }
+        }
+
         public void Load(IPropertiesContrianer model)
         {
             if (model == null)
@@ -64,15 +78,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
 
             this.AddCustomProperties(layer, _layerProperties);
 
-            _layerProperties.Add(null); // delimiter
-            if (layer.NeuronType != null && _neuronFactory.PropertyProviders.TryGetValue(layer.NeuronType, out IPropertiesProvider provider))
-            {
-                provider.Load(layer.NeuronProperties);
-                foreach (var providerProperty in provider.Properties)
-                {
-                    _layerProperties.Add(providerProperty);
-                }
-            }
+            this.UpdateNeuronsProperties(layer);
 
             this.Loaded?.Invoke(this, EventArgs.Empty);
         }

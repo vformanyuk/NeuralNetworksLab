@@ -10,7 +10,7 @@ namespace GraphView.Framework
         #region Public Methods
 
         public static IList<T> AreaHitTest<T>(this FrameworkElement element, Point startPoint, double width, double height)
-            where T : class
+            where T : DependencyObject
         {
             var result = new List<T>();
 
@@ -28,7 +28,7 @@ namespace GraphView.Framework
         }
 
         public static T AreaHitTest<T>(this FrameworkElement element, Point center, double radius)
-            where T : class
+            where T : DependencyObject
         {
             T hitTestResult = null;
             var hitTestParams = new GeometryHitTestParameters(new EllipseGeometry(center, radius, radius));
@@ -44,14 +44,14 @@ namespace GraphView.Framework
             return hitTestResult;
         }
 
-        public static T GetParent<T>(this FrameworkElement element) where T : class
+        public static T GetParent<T>(this FrameworkElement element) where T : DependencyObject
         {
             if (element == null)
             {
                 return null;
             }
 
-            var parent = (element.Parent ?? element.TemplatedParent) as FrameworkElement;
+            var parent = VisualTreeHelper.GetParent(element) as FrameworkElement;
             while (parent != null)
             {
                 var testParent = parent as T;
@@ -60,13 +60,13 @@ namespace GraphView.Framework
                     return testParent;
                 }
 
-                parent = (parent.Parent ?? parent.TemplatedParent) as FrameworkElement;
+                parent = VisualTreeHelper.GetParent(parent) as FrameworkElement;
             }
 
             return null;
         }
 
-        public static T HitTest<T>(this FrameworkElement element, Point position) where T : class
+        public static T HitTest<T>(this FrameworkElement element, Point position) where T : DependencyObject
         {
             var hittest = element.InputHitTest(position);
             if (hittest == null) return null;

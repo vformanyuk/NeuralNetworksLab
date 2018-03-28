@@ -21,6 +21,12 @@ namespace GraphView.Framework.Controls
         public static readonly DependencyProperty DiagramProperty = DependencyProperty.Register(
             "Diagram", typeof (IDiagram), typeof (DiagramCanvasControl), new PropertyMetadata(DiagramChanged));
 
+        /// <summary>
+        /// If this depenency property is set to true, allow to connect to connection
+        /// IConnectionPoint implementation must have parametless constructor
+        /// </summary>
+        public static readonly DependencyProperty AllowConnectToConnectionsProperty = DependencyProperty.Register(
+            "AllowConnectToConnections", typeof(bool), typeof(DiagramCanvasControl), new PropertyMetadata(default(bool)));
         #endregion
 
         /// <summary>
@@ -48,6 +54,11 @@ namespace GraphView.Framework.Controls
             set { SetValue(DiagramProperty, value); }
         }
 
+        public bool AllowConnectToConnections
+        {
+            get { return (bool)GetValue(AllowConnectToConnectionsProperty); }
+            set { SetValue(AllowConnectToConnectionsProperty, value); }
+        }
         #endregion
 
         #region Private Methods
@@ -229,7 +240,7 @@ namespace GraphView.Framework.Controls
                     }
 
                     var noneVirtualConnection = this.HitTest<ConnectionContainerControl>(_currentPosition);
-                    if (noneVirtualConnection != null)
+                    if (noneVirtualConnection != null && AllowConnectToConnections)
                     {
                         var oldSource = noneVirtualConnection.Source;
                         var oldDestination = noneVirtualConnection.Destination;

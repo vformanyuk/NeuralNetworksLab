@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using NeuralNetworkLab.Infrastructure.Common.Properties;
 using NeuralNetworkLab.Infrastructure.Events;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 using NeuralNetworkLab.Interfaces;
@@ -16,16 +18,24 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         private bool _isSelected;
 
         private readonly INeuronFactory _neuronFactory;
+        private readonly LayerProperties _propertiesProvider;
 
-        private readonly List<IConnectionPoint> _inputs = new List<IConnectionPoint>();
-        private readonly List<IConnectionPoint> _outputs = new List<IConnectionPoint>();
-        private readonly List<IPropertiesContrianer> _properties = new List<IPropertiesContrianer>();
+        private readonly ObservableCollection<IConnectionPoint> _inputs = new ObservableCollection<IConnectionPoint>();
+        private readonly ObservableCollection<IConnectionPoint> _outputs = new ObservableCollection<IConnectionPoint>();
+        private readonly ObservableCollection<IPropertiesContrianer> _properties = new ObservableCollection<IPropertiesContrianer>();
 
         public Layer(INeuronFactory factory)
         {
             _neuronFactory = factory;
             _compactInputsView = true;
             _compactOutputsView = true;
+            _neuronsCount = 1; // each layer has one neuron by defeault
+
+            if (_neuronFactory.PropertyProviders.TryGetValue(this.GetType(), out IPropertiesProvider provider) &&
+                provider is LayerProperties layerProperties)
+            {
+                _propertiesProvider = layerProperties;
+            }
         }
 
         private bool _compactInputsView;
@@ -82,6 +92,9 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 if (_neuronType == value) return;
 
                 _neuronType = value;
+
+                this.NeuronsCount = 1;  // each layer has one neuron by defeault
+
                 _properties.Clear();
                 if (_neuronFactory.PropertiesContainerConstructors.ContainsKey(_neuronType))
                 {
@@ -89,10 +102,18 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                     {
                         _properties.Add(_neuronFactory.PropertiesContainerConstructors[_neuronType].Invoke());
                     }
+
+                    _propertiesProvider?.UpdateNeuronsProperties(this);
                 }
+
+                this.UpdateNeuronsCount((int) this.NeuronsCount);
                 OnPropertyChanged(nameof(NeuronType));
             }
         }
+
+        public IEnumerable<IConnectionPoint> Inputs => _inputs;
+        public IEnumerable<IConnectionPoint> Outputs => _outputs;
+        public IEnumerable<IPropertiesContrianer> NeuronProperties => _properties;
 
         private void UpdateNeuronsCount(int delta)
         {
@@ -118,12 +139,12 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
             {
                 for (var i = 0; i < delta; i++)
                 {
-                    if (!this.UseCompactOutputs)
+                    if (!this.UseCompactOutputs || _outputs.Count == 0)
                     {
                         _outputs.Add(new Connector(this));
                     }
 
-                    if (!this.UseCompactInputs)
+                    if (!this.UseCompactInputs || _inputs.Count == 0)
                     {
                         _inputs.Add(new Connector(this));
                     }
@@ -139,7 +160,10 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 {
                     var toRemove = _inputs.Skip(1).ToList();
                     EventAggregator.Publish(new ConnectorsRemovedEventArgs(toRemove));
-                    _inputs.RemoveRange(1, toRemove.Count);
+                    foreach (var connectionPoint in toRemove)
+                    {
+                        _inputs.Remove(connectionPoint);
+                    }
                     toRemove.Clear();
                 }
                 else
@@ -156,7 +180,10 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 {
                     var toRemove = _outputs.Skip(1).ToList();
                     EventAggregator.Publish(new ConnectorsRemovedEventArgs(toRemove));
-                    _outputs.RemoveRange(1, toRemove.Count);
+                    foreach (var connectionPoint in toRemove)
+                    {
+                        _outputs.Remove(connectionPoint);
+                    }
                     toRemove.Clear();
                 }
                 else
@@ -231,7 +258,5 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 OnPropertyChanged();
             }
         }
-
-        public IEnumerable<IPropertiesContrianer> NeuronProperties => _properties;
     }
 }

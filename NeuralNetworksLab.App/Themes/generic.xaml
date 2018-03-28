@@ -31,7 +31,7 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=NeuronsCount, Mode=OneWay}"></TextBlock>
-                <ItemsControl Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"></ItemsControl>
+                <ItemsControl Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" ItemsSource="{Binding Path=Outputs}"></ItemsControl>
             </Grid>
         </Border>
     </DataTemplate>
@@ -45,9 +45,9 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <ItemsControl Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"></ItemsControl>
+                <ItemsControl Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" ItemsSource="{Binding Path=Inputs}"></ItemsControl>
                 <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=NeuronsCount, Mode=OneWay}"></TextBlock>
-                <ItemsControl Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"></ItemsControl>
+                <ItemsControl Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" ItemsSource="{Binding Path=Outputs}"></ItemsControl>
             </Grid>
         </Border>
     </DataTemplate>
