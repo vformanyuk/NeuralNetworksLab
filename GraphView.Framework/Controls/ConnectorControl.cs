@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Data;
 using GraphView.Framework.Converters;
 using NeuralNetworkLab.Interfaces;
@@ -14,7 +16,9 @@ namespace GraphView.Framework.Controls
 
         #endregion
 
-        #region Constructors
+        private Point _currentControlOffest;
+        private BaseNodeControl _parentNode;
+        private readonly OffsetConverter _xConverter, _yConverter;
 
         static ConnectorControl()
         {
@@ -24,6 +28,9 @@ namespace GraphView.Framework.Controls
 
         public ConnectorControl()
         {
+            _xConverter = new OffsetConverter();
+            _yConverter = new OffsetConverter();
+
             Loaded += ConnectorControl_Loaded;
         }
 
@@ -35,38 +42,59 @@ namespace GraphView.Framework.Controls
                 return;
             }
 
-            var offset = TranslatePoint(new Point(0, 0), parentNode);
+            _parentNode = parentNode;
+            _parentNode.LayoutUpdated += ParentNode_LayoutUpdated;
+
+            var offset = TranslatePoint(new Point(0, 0), _parentNode);
             _currentControlOffest = new Point(offset.X + ActualWidth / 2, offset.Y + ActualHeight / 2);
 
+            _xConverter.ManagedOffset = _currentControlOffest.X;
             SetBinding(XProperty,
                 new Binding("X")
                 {
-                    Source = parentNode, 
-                    Converter = new OffsetConverter(),
-                    ConverterParameter = _currentControlOffest.X
+                    Source = _parentNode, 
+                    Converter = _xConverter
                 });
 
+            _yConverter.ManagedOffset = _currentControlOffest.Y;
             SetBinding(YProperty,
                 new Binding("Y")
                 {
-                    Source = parentNode,
-                    Converter = new OffsetConverter(),
-                    ConverterParameter = _currentControlOffest.Y
+                    Source = _parentNode,
+                    Converter = _yConverter
                 });
         }
 
-        #endregion
+        private void ParentNode_LayoutUpdated(object sender, System.EventArgs e)
+        {
+            var offset = TranslatePoint(new Point(0, 0), _parentNode);
+            var p = new Point(offset.X + ActualWidth / 2, offset.Y + ActualHeight / 2);
 
-        #region Public properties
+            if ((int) (_currentControlOffest.X - p.X) == 0 && (int) (_currentControlOffest.Y - p.Y) == 0)
+            {
+                return;
+            }
+
+            _currentControlOffest = p;
+
+            var xBinding = GetBindingExpression(XProperty);
+            if (xBinding != null)
+            {
+                _xConverter.ManagedOffset = _currentControlOffest.X;
+                xBinding.UpdateTarget();
+            }
+            var yBinding = GetBindingExpression(YProperty);
+            if (yBinding != null)
+            {
+                _yConverter.ManagedOffset = _currentControlOffest.Y;
+                yBinding.UpdateTarget();
+            }
+        }
 
         public IConnectionPoint ConnectionPoint
         {
-            get { return (IConnectionPoint) GetValue(ConnectionPointProperty); }
-            set { SetValue(ConnectionPointProperty, value); }
+            get => (IConnectionPoint) GetValue(ConnectionPointProperty);
+            set => SetValue(ConnectionPointProperty, value);
         }
-
-        #endregion
-
-        private Point _currentControlOffest;
     }
 }

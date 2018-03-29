@@ -93,7 +93,8 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 
                 _neuronType = value;
 
-                this.NeuronsCount = 1;  // each layer has one neuron by defeault
+                _neuronsCount = 1;  // each layer has one neuron by defeault
+                OnPropertyChanged(nameof(this.NeuronsCount));
 
                 _properties.Clear();
                 if (_neuronFactory.PropertiesContainerConstructors.ContainsKey(_neuronType))

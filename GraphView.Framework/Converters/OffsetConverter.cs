@@ -7,14 +7,13 @@ namespace GraphView.Framework.Converters
 {
     public class OffsetConverter : IValueConverter
     {
+        public double ManagedOffset { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double val, offset;
-            if (value != null && parameter != null
-                && double.TryParse(value.ToString(), out val)
-                && double.TryParse(parameter.ToString(), out offset))
+            if (value != null && double.TryParse(value.ToString(), out var val))
             {
-                return val + offset;
+                return val + ManagedOffset;
             }
 
             return value;
