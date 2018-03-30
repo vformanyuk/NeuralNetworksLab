@@ -9,7 +9,9 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
 {
     public abstract class NeuralNetworkProperty<T> : IGenericProperty, INotifyPropertyChanged
     {
-        protected NeuralNetworkProperty(string name, T initialValue, Action<T> propertySetter, UIElement customEditor = null, IEnumerable<T> defaultValues = null)
+        private readonly Func<T> _getterFunc;
+
+        protected NeuralNetworkProperty(string name, Func<T> propertyGetter, Action<T> propertySetter, UIElement customEditor = null, IEnumerable<T> defaultValues = null)
         {
             PropertyName = name;
             PropertySetter = propertySetter;
@@ -19,7 +21,8 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
                 ValuesCollection = defaultValues.ToImmutableList();
             }
 
-            _value = initialValue;
+            _getterFunc = propertyGetter;
+            _value = propertyGetter.Invoke();
         }
 
         public Action<T> PropertySetter
@@ -58,6 +61,12 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
         object IGenericProperty.Value => this.Value;
 
         public UIElement CustomEditor { get; protected set; }
+
+        public void UpdateProperty()
+        {
+            _value = _getterFunc.Invoke();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

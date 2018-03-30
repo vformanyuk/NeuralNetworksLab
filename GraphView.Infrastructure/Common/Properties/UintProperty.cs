@@ -4,8 +4,8 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
 {
     public class UintProperty : NeuralNetworkProperty<uint>
     {
-        public UintProperty(string name, Action<uint> setter, uint? defaultValue) 
-            : base(name, defaultValue ?? default(uint), setter)
+        public UintProperty(string name, Func<uint> getter, Action<uint> setter) 
+            : base(name, getter, setter)
         {
         }
     }

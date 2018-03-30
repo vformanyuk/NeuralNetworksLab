@@ -23,15 +23,21 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
             }
 
             // CSV layer is CSV layer.
-            var neuronTypeProperty = properties.FirstOrDefault(p => p.PropertyName == LayerProperties.NeuronTypeNameKey);
+            var neuronTypeProperty = properties.FirstOrDefault(p => p.PropertyName == NeuronTypeNameKey);
             if (neuronTypeProperty != null)
             {
                 properties.Remove(neuronTypeProperty);
             }
 
-            properties.Add(new CharProperty(DelimiterKey, v => csvLayer.Delimiter = v, csvLayer.Delimiter));
-            properties.Add(new FileSelectProperty(FileKey, v => csvLayer.FileName = v, csvLayer.FileName));
-            properties.Add(new BooleanProperty(SkipHeaderKey, v => csvLayer.SkipHeaderRow = v, csvLayer.SkipHeaderRow));
+            var compactInputsProperty = properties.FirstOrDefault(p => p.PropertyName == CompactInputFibersKey);
+            if (compactInputsProperty != null)
+            {
+                properties.Remove(compactInputsProperty);
+            }
+
+            properties.Add(new CharProperty(DelimiterKey, () => csvLayer.Delimiter ?? default(char), v => csvLayer.Delimiter = v));
+            properties.Add(new FileSelectProperty(FileKey, () => csvLayer.FileName, v => csvLayer.FileName = v));
+            properties.Add(new BooleanProperty(SkipHeaderKey, () => csvLayer.SkipHeaderRow, v => csvLayer.SkipHeaderRow = v));
         }
     }
 }

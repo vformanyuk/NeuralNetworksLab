@@ -24,8 +24,8 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
             };
         }
 
-        public ActivationFunctionProperty(string name, Action<IFunctor> setter, IFunctor functionByDefault = null)
-            : base(name, initialValue: functionByDefault, propertySetter: setter,
+        public ActivationFunctionProperty(string name, Func<IFunctor> getter, Action<IFunctor> setter)
+            : base(name, propertyGetter: getter, propertySetter: setter,
                 defaultValues: new[] {_sigmoid, _relu})
         {
         }

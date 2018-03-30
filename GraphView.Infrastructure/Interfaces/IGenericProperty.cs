@@ -8,5 +8,7 @@ namespace NeuralNetworkLab.Infrastructure.Interfaces
         bool IsReadonly { get; }
         object Value { get; }
         UIElement CustomEditor { get; }
+
+        void UpdateProperty();
     }
 }

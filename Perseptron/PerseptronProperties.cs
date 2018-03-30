@@ -51,12 +51,14 @@ namespace Perseptron
             }
 
             _perseptronProperties.Clear();
-            _perseptronProperties.Add(new ActivationFunctionProperty(ActivationFunctionKey, v =>
-            {
-                container.ActivationFunction = v;
-                container.ActivationFunctionDerivative = ActivationFunctionProperty.Derivatives[v];
-            }, container.ActivationFunction));
-            _perseptronProperties.Add(new DoubleProperty(BiasKey, v => container.Bias = v, container.Bias));
+            _perseptronProperties.Add(new ActivationFunctionProperty(ActivationFunctionKey,
+                () => container.ActivationFunction,
+                v =>
+                {
+                    container.ActivationFunction = v;
+                    container.ActivationFunctionDerivative = ActivationFunctionProperty.Derivatives[v];
+                }));
+            _perseptronProperties.Add(new DoubleProperty(BiasKey, () => container.Bias, v => container.Bias = v));
 
             Loaded?.Invoke(this, EventArgs.Empty);
         }
@@ -77,23 +79,27 @@ namespace Perseptron
 
             _perseptronProperties.Clear();
 
-            _perseptronProperties.Add(new ActivationFunctionProperty(ActivationFunctionKey, v =>
-            {
-                var derivative = ActivationFunctionProperty.Derivatives[v];
-                foreach (var container in perseptronProps)
+            _perseptronProperties.Add(new ActivationFunctionProperty(ActivationFunctionKey,
+                () => perseptronProps[0].ActivationFunction,
+                v =>
                 {
-                    container.ActivationFunction = v;
-                    container.ActivationFunctionDerivative = derivative;
-                }
-            }, perseptronProps[0].ActivationFunction));
+                    var derivative = ActivationFunctionProperty.Derivatives[v];
+                    foreach (var container in perseptronProps)
+                    {
+                        container.ActivationFunction = v;
+                        container.ActivationFunctionDerivative = derivative;
+                    }
+                }));
 
-            _perseptronProperties.Add(new DoubleProperty(BiasKey, v =>
-            {
-                foreach (var container in perseptronProps)
+            _perseptronProperties.Add(new DoubleProperty(BiasKey, 
+                () => perseptronProps[0].Bias,
+                v =>
                 {
-                    container.Bias = v;
-                }
-            }, perseptronProps[0].Bias));
+                    foreach (var container in perseptronProps)
+                    {
+                        container.Bias = v;
+                    }
+                }));
 
             Loaded?.Invoke(this, EventArgs.Empty);
         }
