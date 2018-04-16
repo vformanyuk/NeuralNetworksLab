@@ -71,4 +71,8 @@
     <DataTemplate DataType="{x:Type properties:UintProperty}">
         <localControls:IntegerPropertyPresenter DataContext="{Binding}" Unsigned="True"></localControls:IntegerPropertyPresenter>
     </DataTemplate>
+
+    <DataTemplate DataType="{x:Type properties:FileSelectProperty}">
+        <localControls:FileSelectPropertyPresenter DataContext="{Binding}"></localControls:FileSelectPropertyPresenter>
+    </DataTemplate>
 </ResourceDictionary>

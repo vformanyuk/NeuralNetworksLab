@@ -72,7 +72,12 @@ namespace GraphView.Framework.Controls
             _hittestElement = this.HitTest<BaseNodeControl>(_currentPosition);
             if (_hittestElement == null) // if node based element is clicked
             {
-                return;
+                _hittestElement = this.HitTest<ConnectionContainerControl>(_currentPosition);
+
+                if (_hittestElement == null)
+                {
+                    return;
+                }
             }
 
             var connector = _hittestElement as ConnectorControl;
@@ -361,10 +366,15 @@ namespace GraphView.Framework.Controls
                 var connectionCtrl = _hittestElement as ConnectionContainerControl;
                 if (connectionCtrl != null) // connections selection
                 {
-                    var connections = _connections.Where(c => c.Value.Equals(connectionCtrl)).Select(c => c.Key);
+                    var connections = _connections.Where(c => c.Value.Equals(connectionCtrl)).Select(c => c.Key).ToList();
                     foreach (var connection in connections)
                     {
                         connection.IsSelected = !connection.IsSelected;
+                    }
+
+                    if (connections.Count > 0)
+                    {
+                        TryRaiseConnectionSelectionChanged();
                     }
                 }
             }
@@ -504,11 +514,12 @@ namespace GraphView.Framework.Controls
 
         private void TryRaiseNodeSelectionChanged()
         {
-            if (!(this.Diagram is Diagram diagram))
-            {
-                return;
-            }
-            diagram.RaisNodeSelectionChanged();
+            (this.Diagram as Diagram)?.RaisNodeSelectionChanged();
+        }
+
+        private void TryRaiseConnectionSelectionChanged()
+        {
+            (this.Diagram as Diagram)?.RaisConnectionSelectionChanged();
         }
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -57,8 +58,24 @@ namespace NeuralNetworksLab.App.ViewModels
 
             Toolbox = new ToolboxViewModel(_plugins);
             EventAggregator.Subscribe<CreateNodeEventArgs>(OnNodeCreateRequested);
+            EventAggregator.Subscribe<ConnectorsRemovedEventArgs>(OnConnectorsRemoved);
 
             _settings = settings;
+        }
+
+        private void OnConnectorsRemoved(ConnectorsRemovedEventArgs obj)
+        {
+            var toRemove = (from c in _diagram.Connections
+                where obj.Connectors.Contains(c.StartPoint) ||
+                      obj.Connectors.Contains(c.EndPoint)
+                select c).ToList();
+
+            foreach (var connection in toRemove)
+            {
+                _diagram.Connections.Remove(connection);
+            }
+
+            toRemove.Clear();
         }
 
         private void OnNodeCreateRequested(CreateNodeEventArgs createNodeEventArgs)

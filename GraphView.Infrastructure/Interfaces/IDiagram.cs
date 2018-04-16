@@ -12,5 +12,6 @@ namespace NeuralNetworkLab.Interfaces
         ObservableCollection<IConnection> Connections { get; }
 
         event EventHandler NodeSelectionChanged;
+        event EventHandler ConnectionSelectionChanged;
     }
 }

@@ -30,6 +30,8 @@ namespace NeuralNetworksLab.App.Services
                 propertyProviders.Add(neuralNetworkLabPlugin.NeuronType, neuralNetworkLabPlugin.PropertiesProvider);
             }
 
+            constructors.Add(typeof(Sensor), c => new Sensor()); // sensor has no properties
+
             propertyProviders.Add(typeof(Layer), new LayerProperties(this));
             propertyProviders.Add(typeof(CsvSensorLayer), new CsvSensorLayerProperties(this));
 

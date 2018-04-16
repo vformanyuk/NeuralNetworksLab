@@ -11,6 +11,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         public CsvSensorLayer(INeuronFactory factory) : base(factory)
         {
             this.NeuronType = typeof(Sensor);
+            _delimiter = ',';
         }
 
         private char? _delimiter;

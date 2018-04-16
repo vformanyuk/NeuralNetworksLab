@@ -69,5 +69,15 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public override string ToString()
+        {
+            if (_value == null)
+            {
+                return string.Empty;
+            }
+
+            return _value.ToString();
+        }
     }
 }

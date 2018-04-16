@@ -17,10 +17,16 @@ namespace GraphView.Framework
         public IConnectionsFactory ConnectionsFactory { get; private set; }
         public ObservableCollection<IConnection> Connections { get; private set; }
         public event EventHandler NodeSelectionChanged;
+        public event EventHandler ConnectionSelectionChanged;
 
         internal void RaisNodeSelectionChanged()
         {
             NodeSelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal void RaisConnectionSelectionChanged()
+        {
+            ConnectionSelectionChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }
