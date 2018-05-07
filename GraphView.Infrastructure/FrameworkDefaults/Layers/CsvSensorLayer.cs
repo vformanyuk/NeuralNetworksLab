@@ -1,16 +1,17 @@
 ﻿using System;
 using System.IO;
+using NeuralNetworkLab.Infrastructure.DataSource;
+using NeuralNetworkLab.Infrastructure.FrameworkDefaults.Layers;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 {
-    public class CsvSensorLayer : Layer
+    public class CsvSensorLayer : Layer, IDatasourceProducer
     {
-        // subscribe to EVentAggregator 'emulate' and read csv file emitting got values
-
         public CsvSensorLayer(INeuronFactory factory) : base(factory)
         {
             this.NeuronType = typeof(Sensor);
+            this.Role = LayerRole.Input;
             _delimiter = ',';
         }
 
@@ -72,10 +73,17 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 string line = rdr.ReadLine();
                 if (!string.IsNullOrEmpty(line) && line.IndexOf(_delimiter.Value) > 0)
                 {
-                    var sensorsCount = line.Split(new [] {_delimiter.Value}, StringSplitOptions.RemoveEmptyEntries).Length;
-                    this.NeuronsCount = (uint) sensorsCount - 1;
+                    var sensorsCount = line.Split(new[] {_delimiter.Value}, StringSplitOptions.RemoveEmptyEntries).Length - 1; // last column is meant to be lable column
+                    this.NeuronsCount = (uint) sensorsCount;
                 }
             }
+        }
+
+        public IDataSource GetDatasourceConstructor()
+        {
+            char delimiter = _delimiter ?? ',';
+            string filePath = _file;
+            return new CsvDataSource(filePath, delimiter);
         }
     }
 }

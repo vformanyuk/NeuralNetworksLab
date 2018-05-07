@@ -19,7 +19,7 @@ namespace NeuralNetworkLab.Infrastructure
         public sealed override void OnCompleted()
         {
         }
-
+        
         public sealed override void OnError(Exception ex)
         {
         }

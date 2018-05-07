@@ -4,15 +4,17 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-
+using System.Windows.Input;
 using GraphView.Framework;
 
 using NeuralNetworkLab.Infrastructure;
 using NeuralNetworkLab.Infrastructure.Events;
 using NeuralNetworkLab.Infrastructure.FrameworkDefaults;
 using NeuralNetworkLab.Infrastructure.Interfaces;
+using NeuralNetworkLab.Infrastructure.Network;
 using NeuralNetworkLab.Interfaces;
 using NeuralNetworksLab.App.Annotations;
+using NeuralNetworksLab.App.Commands;
 using NeuralNetworksLab.App.Events;
 using NeuralNetworksLab.App.Extensions;
 using NeuralNetworksLab.App.Services;
@@ -27,6 +29,8 @@ namespace NeuralNetworksLab.App.ViewModels
 
         private readonly ConnectionsFactory _neuroFibersConnectionFactory;
         private readonly List<NeuralNetworkLabPlugin> _plugins;
+
+        public ICommand RunSimulationCommand { get; }
 
         public IDiagram Diagram => _diagram;
 
@@ -61,6 +65,8 @@ namespace NeuralNetworksLab.App.ViewModels
             EventAggregator.Subscribe<ConnectorsRemovedEventArgs>(OnConnectorsRemoved);
 
             _settings = settings;
+
+            RunSimulationCommand = new DelegateCommand(RunSimulationHandler);
         }
 
         private void OnConnectorsRemoved(ConnectorsRemovedEventArgs obj)
@@ -108,6 +114,20 @@ namespace NeuralNetworksLab.App.ViewModels
             this.Properties.Load(selectedNeurons.Select(n => n.Properties));
         }
 
+        private void RunSimulationHandler()
+        {
+            NetworkBuilder builder = new NetworkBuilder(_diagram, _neuronFactory, _settings);
+            using (var network = builder.CreateNetwork())
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    network.RunSimulationAge();
+                }
+            }
+
+        }
+
+        #region IPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -115,5 +135,6 @@ namespace NeuralNetworksLab.App.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
     }
 }

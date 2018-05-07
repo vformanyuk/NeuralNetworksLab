@@ -39,7 +39,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         public void UpdateConnectionPoints(Point startPoint, Point endPoint)
         {
             Data = new PointCollection(Router.CalculateGeometry(startPoint, endPoint));
-            OnPropertyChanged("Data");
+            OnPropertyChanged(nameof(Data));
         }
         #endregion
 
@@ -59,10 +59,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         #endregion
 
         #region Public properties
-        public double Weight
-        {
-            get { return _model?.Weight ?? 0; }
-        }
+        public double Weight => _model?.Weight ?? 0;
 
         public NeuroFiber Model
         {

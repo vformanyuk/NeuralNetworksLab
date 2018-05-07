@@ -19,14 +19,14 @@ namespace Perseptron
             PropertiesProvider = new PerseptronProperties(settings);
         }
 
-        public override IPropertiesContrianer CreatePropertiesContrianer()
+        public override IPropertiesContainer CreatePropertiesContrianer()
         {
             return new PerseptronPropertiesContainer(_settings);
         }
 
         public override IPropertiesProvider PropertiesProvider { get; }
 
-        public override NeuronBase CreateNeuronModel(IPropertiesContrianer properties)
+        public override NeuronBase CreateNeuronModel(IPropertiesContainer properties)
         {
             return new Perseptron(this._settings, properties as PerseptronPropertiesContainer);
         }

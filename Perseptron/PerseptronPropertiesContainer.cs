@@ -3,7 +3,7 @@ using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace Perseptron
 {
-    public class PerseptronPropertiesContainer : IPropertiesContrianer
+    public class PerseptronPropertiesContainer : IPropertiesContainer
     {
         public IFunctor ActivationFunction { get; internal set; }
         public IFunctor ActivationFunctionDerivative { get; internal set; }

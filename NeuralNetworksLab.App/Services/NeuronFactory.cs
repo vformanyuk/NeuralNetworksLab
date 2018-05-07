@@ -10,16 +10,16 @@ namespace NeuralNetworksLab.App.Services
 {
     public class NeuronFactory : INeuronFactory
     {
-        public IReadOnlyDictionary<Type, Func<IPropertiesContrianer, NeuronBase>> Constructors { get; }
+        public IReadOnlyDictionary<Type, Func<IPropertiesContainer, NeuronBase>> Constructors { get; }
         public IReadOnlyDictionary<Type, Func<INode>> NodeConstructors { get; }
-        public IReadOnlyDictionary<Type, Func<IPropertiesContrianer>> PropertiesContainerConstructors { get; }
+        public IReadOnlyDictionary<Type, Func<IPropertiesContainer>> PropertiesContainerConstructors { get; }
         public IReadOnlyDictionary<Type, IPropertiesProvider> PropertyProviders { get; }
 
         public NeuronFactory(IEnumerable<NeuralNetworkLabPlugin> plugins)
         {
-            var constructors = new Dictionary<Type, Func<IPropertiesContrianer, NeuronBase>>();
+            var constructors = new Dictionary<Type, Func<IPropertiesContainer, NeuronBase>>();
             var nodeConstructors = new Dictionary<Type, Func<INode>>();
-            var propertiesConstructors = new Dictionary<Type, Func<IPropertiesContrianer>>();
+            var propertiesConstructors = new Dictionary<Type, Func<IPropertiesContainer>>();
             var propertyProviders = new Dictionary<Type, IPropertiesProvider>();
 
             foreach (var neuralNetworkLabPlugin in plugins)

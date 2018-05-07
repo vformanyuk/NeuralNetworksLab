@@ -13,7 +13,7 @@ namespace NeuralNetworkLab.Infrastructure
         // dendrits that will adjust thier weights with learning error
         protected readonly List<ISupportLearning> _learningDendrits = new List<ISupportLearning>();
 
-        public double Output { get; protected set; }
+        public double Output { get; set; }
 
         public int DendritsCount => _learningDendrits.Count;
 

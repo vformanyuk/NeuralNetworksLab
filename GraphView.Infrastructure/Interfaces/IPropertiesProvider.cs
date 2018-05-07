@@ -9,8 +9,8 @@ namespace NeuralNetworkLab.Infrastructure.Interfaces
     {
         event EventHandler Loaded;
         ObservableCollection<IGenericProperty> Properties { get; }
-        void Load(IPropertiesContrianer properties);
-        void Load(IEnumerable<IPropertiesContrianer> model);
+        void Load(IPropertiesContainer properties);
+        void Load(IEnumerable<IPropertiesContainer> model);
         void Commit();
     }
 }

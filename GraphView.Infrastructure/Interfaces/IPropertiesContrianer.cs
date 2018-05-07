@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NeuralNetworkLab.Infrastructure.Interfaces
 {
-    public interface IPropertiesContrianer
+    public interface IPropertiesContainer
     {
     }
 }

@@ -5,7 +5,7 @@ namespace NeuralNetworkLab.Infrastructure.Interfaces
 {
     public interface INetworkNode : INode
     {
-        IPropertiesContrianer Properties { get; }
+        IPropertiesContainer Properties { get; }
         Type NeuronType { get; }
     }
 }

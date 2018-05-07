@@ -1,30 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using NeuralNetworkLab.Infrastructure.Common.Properties;
 using NeuralNetworkLab.Infrastructure.Events;
+using NeuralNetworkLab.Infrastructure.FrameworkDefaults.Layers;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 using NeuralNetworkLab.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 {
-    public class Layer : INode, INotifyPropertyChanged, IDisposable, IPropertiesContrianer
+    public class Layer : NeuronNode, IPropertiesContainer
     {
-        private string _name;
-        private double _x, _y;
-        private bool _isSelected;
-
         private readonly INeuronFactory _neuronFactory;
         private readonly LayerProperties _propertiesProvider;
 
         private readonly ObservableCollection<IConnectionPoint> _inputs = new ObservableCollection<IConnectionPoint>();
         private readonly ObservableCollection<IConnectionPoint> _outputs = new ObservableCollection<IConnectionPoint>();
-        private readonly ObservableCollection<IPropertiesContrianer> _properties = new ObservableCollection<IPropertiesContrianer>();
 
-        public Layer(INeuronFactory factory)
+        private IPropertiesContainer _properties;
+
+        public Layer(INeuronFactory factory) : base(typeof(NeuronBase))
         {
             _neuronFactory = factory;
             _compactInputsView = true;
@@ -36,6 +32,8 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
             {
                 _propertiesProvider = layerProperties;
             }
+
+            this.Properties = this;
         }
 
         private bool _compactInputsView;
@@ -84,7 +82,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         }
 
         private Type _neuronType;
-        public Type NeuronType
+        public new Type NeuronType
         {
             get => _neuronType;
             set
@@ -92,18 +90,14 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                 if (_neuronType == value) return;
 
                 _neuronType = value;
+                base.NeuronType = value;
 
                 _neuronsCount = 1;  // each layer has one neuron by defeault
                 OnPropertyChanged(nameof(this.NeuronsCount));
 
-                _properties.Clear();
                 if (_neuronFactory.PropertiesContainerConstructors.ContainsKey(_neuronType))
                 {
-                    for (int i = 0; i < this.NeuronsCount; i++)
-                    {
-                        _properties.Add(_neuronFactory.PropertiesContainerConstructors[_neuronType].Invoke());
-                    }
-
+                    _properties = _neuronFactory.PropertiesContainerConstructors[_neuronType].Invoke();
                     _propertiesProvider?.UpdateNeuronsProperties(this);
                 }
 
@@ -114,7 +108,13 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
 
         public IEnumerable<IConnectionPoint> Inputs => _inputs;
         public IEnumerable<IConnectionPoint> Outputs => _outputs;
-        public IEnumerable<IPropertiesContrianer> NeuronProperties => _properties;
+        public IPropertiesContainer NeuronProperties => _properties;
+
+        public LayerRole Role
+        {
+            get;
+            protected set;
+        }
 
         private void UpdateNeuronsCount(int delta)
         {
@@ -194,69 +194,6 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
                         _outputs.Add(new Connector(this));
                     }
                 }
-            }
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #region INode Members
-
-        public string Name
-        {
-            get => _name;
-            set
-            {
-                if (_name == value) return;
-
-                _name = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public virtual double X
-        {
-            get => _x;
-            set
-            {
-                _x = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public virtual double Y
-        {
-            get => _y;
-            set
-            {
-                _y = value;
-                OnPropertyChanged();
-            }
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
-
-        public virtual void Dispose()
-        {
-        }
-
-        public virtual bool IsSelected
-        {
-            get => _isSelected;
-            set
-            {
-                if (_isSelected == value) return;
-
-                _isSelected = value;
-                OnPropertyChanged();
             }
         }
     }

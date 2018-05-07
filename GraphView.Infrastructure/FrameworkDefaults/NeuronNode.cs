@@ -10,6 +10,7 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         protected NeuronNode(Type neuronType)
         {
             this.NeuronType = neuronType;
+            this.Id = Guid.NewGuid();
         }
 
         #region Private Methods
@@ -96,12 +97,18 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
             protected set;
         }
 
-        public IPropertiesContrianer Properties
+        public Guid Id { get; }
+
+        public IPropertiesContainer Properties
         {
             get;
             protected set;
         }
 
-        public Type NeuronType { get; }
+        public Type NeuronType
+        {
+            get;
+            protected set;
+        }
     }
 }

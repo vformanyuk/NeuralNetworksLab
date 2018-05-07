@@ -38,7 +38,7 @@ namespace Perseptron
             throw new NotImplementedException();
         }
 
-        public void Load(IPropertiesContrianer model)
+        public void Load(IPropertiesContainer model)
         {
             if (model == null)
             {
@@ -63,7 +63,7 @@ namespace Perseptron
             Loaded?.Invoke(this, EventArgs.Empty);
         }
 
-        public void Load(IEnumerable<IPropertiesContrianer> contrainers)
+        public void Load(IEnumerable<IPropertiesContainer> contrainers)
         {
             if (contrainers == null)
             {

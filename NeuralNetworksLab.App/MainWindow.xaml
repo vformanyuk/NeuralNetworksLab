@@ -23,6 +23,7 @@
         <views:ToolboxView DataContext="{Binding Path=Toolbox}"></views:ToolboxView>
         <grapViewControls:DiagramCanvasControl Grid.Row="1" Grid.Column="0" Diagram="{Binding Path=Diagram, Mode=OneWay}"></grapViewControls:DiagramCanvasControl>
 
-        <views:PropertiesView Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" DataContext="{Binding Properties}"></views:PropertiesView>
+        <Button Content="Build map" Grid.Column="1" Grid.Row="0" Command="{Binding RunSimulationCommand}"></Button>
+        <views:PropertiesView Grid.Column="1" Grid.Row="1" DataContext="{Binding Properties}"></views:PropertiesView>
     </Grid>
 </Window>

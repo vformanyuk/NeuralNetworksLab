@@ -43,7 +43,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
             }
         }
 
-        public void Load(IPropertiesContrianer model)
+        public void Load(IPropertiesContainer model)
         {
             if (model == null)
             {
@@ -65,7 +65,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
 
             _layerProperties.Clear();
 
-            var layerNames = _neuronFactory.Constructors.Keys.Select(l => l.Name);
+            var layerNames = _neuronFactory.Constructors.Keys.Where(k => k != typeof(Sensor)).Select(l => l.Name);
             _layerProperties.Add(new StringProperty(NeuronTypeNameKey, 
                 () => layer.NeuronType?.Name ?? String.Empty, 
                 n =>
@@ -100,7 +100,7 @@ namespace NeuralNetworkLab.Infrastructure.Common.Properties
         {
         }
 
-        public void Load(IEnumerable<IPropertiesContrianer> model)
+        public void Load(IEnumerable<IPropertiesContainer> model)
         {
             throw new NotImplementedException();
         }

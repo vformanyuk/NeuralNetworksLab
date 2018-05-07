@@ -18,11 +18,14 @@ namespace NeuralNetworkLab.Infrastructure.FrameworkDefaults
         {
             _canConnect = canConnect;
             _host = host;
+            this.Id = Guid.NewGuid();
         }
 
         #endregion
 
         public INode Host => _host;
+
+        public Guid Id { get; }
 
         #region Public Methods
 
