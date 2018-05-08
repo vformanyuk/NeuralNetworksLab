@@ -93,6 +93,7 @@
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Converters\IntegerConverter.cs" />
     <Compile Include="Converters\InversBoolConverter.cs" />
+    <Compile Include="Services\LogAggregator.cs" />
     <Compile Include="TemplateSelectors\PropertyTemplateSelector.cs" />
     <Compile Include="Events\ConnectionEventArgs.cs" />
     <Compile Include="Events\CreateNodeEventArgs.cs" />
@@ -106,6 +107,9 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ToolboxViewModel.cs" />
+    <Compile Include="Views\LogView.xaml.cs">
+      <DependentUpon>LogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PropertiesView.xaml.cs">
       <DependentUpon>PropertiesView.xaml</DependentUpon>
     </Compile>
@@ -153,6 +157,9 @@
     </Compile>
     <Page Include="Themes\generic.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LogView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PropertiesView.xaml">

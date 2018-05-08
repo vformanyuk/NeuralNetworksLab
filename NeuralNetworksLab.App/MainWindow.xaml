@@ -9,11 +9,12 @@
         xmlns:controls="clr-namespace:NeuralNetworksLab.App.Controls"
         xmlns:converters="clr-namespace:NeuralNetworksLab.App.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="680" Width="720">
+        Title="MainWindow" Height="768" Width="1024">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"></ColumnDefinition>
@@ -24,6 +25,8 @@
         <grapViewControls:DiagramCanvasControl Grid.Row="1" Grid.Column="0" Diagram="{Binding Path=Diagram, Mode=OneWay}"></grapViewControls:DiagramCanvasControl>
 
         <Button Content="Build map" Grid.Column="1" Grid.Row="0" Command="{Binding RunSimulationCommand}"></Button>
-        <views:PropertiesView Grid.Column="1" Grid.Row="1" DataContext="{Binding Properties}"></views:PropertiesView>
+        <views:PropertiesView Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" DataContext="{Binding Properties}"></views:PropertiesView>
+
+        <views:LogView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" LogAggregator="{Binding Path=LogAggregator}"></views:LogView>
     </Grid>
 </Window>

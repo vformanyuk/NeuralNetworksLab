@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reactive.Linq;
 using NeuralNetworkLab.Infrastructure.Interfaces;
 
 namespace NeuralNetworkLab.Infrastructure.Network
@@ -14,14 +16,16 @@ namespace NeuralNetworkLab.Infrastructure.Network
         private IDataSource _dataSource;
 
         private readonly ISettingsProvider _settings;
+        private readonly ILogAggregator _logAggregator;
 
         private readonly Random _rnd;
 
-        public NeuralNetwork(ISettingsProvider settings)
+        public NeuralNetwork(ISettingsProvider settings, ILogAggregator logAggregator)
         {
             _fibers = new List<NeuroFiber>();
             _neurons = new Dictionary<Guid, NeuronBase>();
             _settings = settings;
+            _logAggregator = logAggregator;
 
             _rnd = new Random(Int32.MaxValue); // max value for debugging
         }
@@ -38,6 +42,7 @@ namespace NeuralNetworkLab.Infrastructure.Network
         public void AppendNeuron(Guid id, NeuronBase neuron)
         {
             _neurons.Add(id, neuron);
+            //neuron.Select(v => v.ToString(CultureInfo.InvariantCulture)).Subscribe(_logAggregator);
             neuron.Output = _rnd.NextDouble();
         }
 
@@ -51,6 +56,7 @@ namespace NeuralNetworkLab.Infrastructure.Network
         {
             if (_dataSource == null) return;
 
+            //TODO: this does not work with logging
             var output = _neurons.Values.First(n => n.AxonsCount == 0);
 
             using (_dataSource.BeginDataFetch())
@@ -63,7 +69,10 @@ namespace NeuralNetworkLab.Infrastructure.Network
                         _sensors[i].Emit(data[i]);
                     }
 
-                    output.Learn(data.Last() - output.Output);
+                    var label = data.Last();
+                    _logAggregator.Publish($"Got {output.Output} but expect {label}.");
+
+                    output.Learn(label - output.Output);
 
                     data = _dataSource.GetNextDataPortion();
                 } 

@@ -23,18 +23,17 @@ namespace NeuralNetworksLab.App.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly IDiagram _diagram;
         private readonly ISettingsProvider _settings;
         private readonly INeuronFactory _neuronFactory;
-
+        
         private readonly ConnectionsFactory _neuroFibersConnectionFactory;
         private readonly List<NeuralNetworkLabPlugin> _plugins;
 
         public ICommand RunSimulationCommand { get; }
 
-        public IDiagram Diagram => _diagram;
-
+        public IDiagram Diagram { get; }
         public ToolboxViewModel Toolbox { get; }
+        public ILogAggregator LogAggregator { get; }
 
         private IPropertiesProvider _propertiesProvider;
         public IPropertiesProvider Properties
@@ -49,16 +48,25 @@ namespace NeuralNetworksLab.App.ViewModels
             }
         }
 
-        public MainViewModel(ISettingsProvider settings, INeuronFactory neuronFactory, IEnumerable<NeuralNetworkLabPlugin> plugins)
+        //TODO: Create data source genereal component. It contains input dataset and optionally output dataset
+        //TODO: Point input layers to datasource.input
+        //TODO: Point output node(s) or layer to datasource.output, if any
+        public MainViewModel(ISettingsProvider settings, 
+                             INeuronFactory neuronFactory,
+                             ILogAggregator logAggregator,
+                             IEnumerable<NeuralNetworkLabPlugin> plugins)
         {
             _plugins = plugins.ToList();
 
             _neuronFactory = neuronFactory;
 
+            //TODO: currently logging subscribtions are treated as axons and brakes learning
+            LogAggregator = logAggregator;
+
             _neuroFibersConnectionFactory = new ConnectionsFactory(settings);
 
-            _diagram = new Diagram(_neuroFibersConnectionFactory);
-            _diagram.NodeSelectionChanged += NodeSelectionChanged;
+            Diagram = new Diagram(_neuroFibersConnectionFactory);
+            Diagram.NodeSelectionChanged += NodeSelectionChanged;
 
             Toolbox = new ToolboxViewModel(_plugins);
             EventAggregator.Subscribe<CreateNodeEventArgs>(OnNodeCreateRequested);
@@ -71,14 +79,14 @@ namespace NeuralNetworksLab.App.ViewModels
 
         private void OnConnectorsRemoved(ConnectorsRemovedEventArgs obj)
         {
-            var toRemove = (from c in _diagram.Connections
+            var toRemove = (from c in Diagram.Connections
                 where obj.Connectors.Contains(c.StartPoint) ||
                       obj.Connectors.Contains(c.EndPoint)
                 select c).ToList();
 
             foreach (var connection in toRemove)
             {
-                _diagram.Connections.Remove(connection);
+                Diagram.Connections.Remove(connection);
             }
 
             toRemove.Clear();
@@ -88,12 +96,12 @@ namespace NeuralNetworksLab.App.ViewModels
         {
             if(!_neuronFactory.NodeConstructors.TryGetValue(createNodeEventArgs.NodeType, out Func<INode> f)) return;
 
-            _diagram.ChildNodes.Add(f.Invoke());
+            Diagram.ChildNodes.Add(f.Invoke());
         }
 
         private void NodeSelectionChanged(object sender, EventArgs e)
         {
-            var selectedNodes = _diagram.ChildNodes.Where(n => n.IsSelected).MostCommon().ToList();
+            var selectedNodes = Diagram.ChildNodes.Where(n => n.IsSelected).MostCommon().ToList();
 
             if (selectedNodes.Count == 0)
             {
@@ -116,7 +124,7 @@ namespace NeuralNetworksLab.App.ViewModels
 
         private void RunSimulationHandler()
         {
-            NetworkBuilder builder = new NetworkBuilder(_diagram, _neuronFactory, _settings);
+            NetworkBuilder builder = new NetworkBuilder(Diagram, _neuronFactory, _settings, LogAggregator);
             using (var network = builder.CreateNetwork())
             {
                 for (int i = 0; i < 1000; i++)

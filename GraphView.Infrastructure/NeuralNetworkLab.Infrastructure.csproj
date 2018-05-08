@@ -98,6 +98,7 @@
     <Compile Include="Interfaces\IDatasourceProducer.cs" />
     <Compile Include="Interfaces\IDiagram.cs" />
     <Compile Include="Interfaces\IFunctor.cs" />
+    <Compile Include="Interfaces\ILogAggregator.cs" />
     <Compile Include="Interfaces\IMovable.cs" />
     <Compile Include="Interfaces\IGenericProperty.cs" />
     <Compile Include="Interfaces\INetworkNode.cs" />

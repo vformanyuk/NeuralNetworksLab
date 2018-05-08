@@ -44,6 +44,7 @@ namespace NeuralNetworksLab.App
 
             builder.RegisterInstance(new Services.SettingsProvider()).As<ISettingsProvider>().ExternallyOwned();
             builder.RegisterType<NeuronFactory>().As<INeuronFactory>().SingleInstance();
+            builder.RegisterType<LogAggregator>().As<ILogAggregator>().SingleInstance();
             builder.RegisterType<MainViewModel>().SingleInstance();
 
             var contrianer = builder.Build();

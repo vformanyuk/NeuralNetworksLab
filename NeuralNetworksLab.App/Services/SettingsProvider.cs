@@ -23,13 +23,7 @@ namespace NeuralNetworksLab.App.Services
             (properties as Dictionary<string, ISettingsItem>)?.Add(property.Name, property);
         }
 
-        public IReadOnlyDictionary<string, ISettingsItem> this[Type neuronType]
-        {
-            get
-            {
-                return _neuronSettings[neuronType];
-            }
-        }
+        public IReadOnlyDictionary<string, ISettingsItem> this[Type neuronType] => _neuronSettings[neuronType];
 
         public double LearningRate { get; set; }
     }

@@ -13,17 +13,20 @@ namespace NeuralNetworkLab.Infrastructure.Network
         private readonly IDiagram _diagram;
         private readonly INeuronFactory _factory;
         private readonly ISettingsProvider _settings;
+        private readonly ILogAggregator _logAggregator;
 
-        public NetworkBuilder(IDiagram diagram, INeuronFactory factory, ISettingsProvider settings)
+        public NetworkBuilder(IDiagram diagram, INeuronFactory factory, 
+                              ISettingsProvider settings, ILogAggregator logAggregator)
         {
             _diagram = diagram;
             _factory = factory;
             _settings = settings;
+            _logAggregator = logAggregator;
         }
 
         public NeuralNetwork CreateNetwork()
         {
-            var network = new NeuralNetwork(_settings);
+            var network = new NeuralNetwork(_settings, _logAggregator);
             // create neuron nodes + metadata
             this.CreateNeurons(network);
             // create fibers + update metadata
@@ -38,6 +41,7 @@ namespace NeuralNetworkLab.Infrastructure.Network
 
         private void CreateNeurons(NeuralNetwork network)
         {
+            //TODO: filter out not connected nodes
             foreach (var node in _diagram.ChildNodes.OfType<NeuronNode>())
             {
                 if (node is Layer layer)
